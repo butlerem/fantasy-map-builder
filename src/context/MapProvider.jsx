@@ -3,7 +3,7 @@ import { MapContext } from "./MapContext";
 import { saveMap, loadMap } from "../utils/storage";
 import { sampleMaps } from "../data/sampleMaps";
 
-const TILE_SIZE = 46;
+const TILE_SIZE = 40;
 const WATER_TILES = new Set(["water", "water2", "water3"]);
 
 export default function MapProvider({ children }) {

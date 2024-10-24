@@ -38,7 +38,6 @@ const TilePaletteMenu = ({
       {/* Base and events palettes */}
       {activeLayer === "base" && (
         <TilePalette
-          title="Base"
           tiles={[
             "water3",
             "water2",
@@ -46,23 +45,16 @@ const TilePaletteMenu = ({
             "grass",
             "grass2",
             "grass3",
-
             "road2",
             "road",
-
             "sand",
-            "tile",
+
             "stone2",
             "tile2",
             "brick2",
-            "stairs",
-
-            "three",
-            "two",
-            "one",
-            "five",
             "four",
             "brick3",
+            "tile",
           ]}
           selectedTile={selectedTiles.base}
           onSelect={(tile) =>
@@ -75,15 +67,13 @@ const TilePaletteMenu = ({
       )}
 
       {activeLayer === "overlay" && (
-        <div className="tile-palette">
-          <h3>Objects</h3>
+        <div className="tile-palette object-layer">
           <TilesetSelector
             selectedTile={selectedTiles.overlay}
             onSelect={(tileData) =>
               setSelectedTiles((prev) => ({ ...prev, overlay: tileData }))
             }
           />
-
           <button
             className="eraser"
             onClick={() =>
@@ -97,18 +87,17 @@ const TilePaletteMenu = ({
               cursor: "pointer",
               border:
                 selectedTiles.overlay === null
-                  ? "3px solid white"
-                  : "2px solid transparent",
+                  ? "1px solid white"
+                  : "1px solid transparent",
             }}
           >
-            <FaEraser size={20} color="var(--white)" />
+            <FaEraser size={15} color="var(--white)" />
           </button>
         </div>
       )}
 
       {activeLayer === "events" && (
         <TilePalette
-          title="Events"
           tiles={[
             "boy",
             "girl",
