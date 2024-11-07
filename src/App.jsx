@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MapCanvas from "./components/MapCanvas";
 import TilePalette from "./components/TilePalette";
 import Toolbar from "./components/Toolbar";
@@ -59,8 +59,12 @@ function App() {
         newGrid[y][x] = selectedTileOverlay;
         return newGrid;
       });
+    } else if (layer === "events") {
+      setAnimatedEvents((prev) => [
+        ...prev,
+        { id: Date.now(), type: selectedTileEvents, x, y, frame: 1 },
+      ]);
     }
-    // For events, you might have a separate UI for placement.
   };
 
   // Clear all layers.
@@ -92,8 +96,13 @@ function App() {
     }
   };
 
+  // Track if game is in edit mode or live mode
+  const [isLiveMode, setIsLiveMode] = useState(false);
+
   // Animation loop for events: update each event's frame periodically.
   useEffect(() => {
+    if (!isLiveMode) return;
+
     let animationFrameId;
     let lastTime = performance.now();
 
@@ -113,7 +122,7 @@ function App() {
 
     animationFrameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  }, [isLiveMode]); // run animation when isLiveMode changes
 
   return (
     <div>
@@ -123,6 +132,8 @@ function App() {
         onClear={clearCanvas}
         onSave={handleSave}
         onLoad={handleLoad}
+        isLiveMode={isLiveMode}
+        setIsLiveMode={setIsLiveMode}
       />
       <div style={{ display: "flex" }}>
         <MapCanvas
