@@ -1,4 +1,4 @@
-// src/components/TilePaletteMenu.jsx
+// In TilePaletteMenu.jsx
 import React from "react";
 import TilePalette from "./TilePalette";
 
@@ -7,6 +7,8 @@ const TilePaletteMenu = ({
   setActiveLayer, // Function to change the active layer
   selectedTiles, // Object containing the selected tile for each layer
   setSelectedTiles, // Function to update the selected tile for a given layer
+  onToolSelect,
+  drawingTool, // Rename from setDrawingTool to onToolSelect to match the prop passed from App
 }) => {
   return (
     <div className="tile-palette">
@@ -43,27 +45,34 @@ const TilePaletteMenu = ({
             "water",
             "water2",
             "road2",
+            "road",
+            "brick",
             "sand",
+            "tile",
             "stone2",
             "tile2",
-            "road",
 
-            "tile",
-            "brick",
+            "stairs",
+            "brick2",
+
+            "brick4",
             "three",
             "two",
             "one",
             "five",
             "four",
-            "stairs",
+            "brick3",
           ]}
           selectedTile={selectedTiles.base}
           onSelect={(tile) =>
             setSelectedTiles((prev) => ({ ...prev, base: tile }))
           }
+          onToolSelect={onToolSelect}
+          drawingTool={drawingTool} // Forward the drawingTool
           layer="base"
         />
       )}
+
       {activeLayer === "overlay" && (
         <TilePalette
           title="Objects"
@@ -84,14 +93,12 @@ const TilePaletteMenu = ({
             "pot",
             "flowers",
             "flowers2",
-
             "vines",
             "fence7",
             "fence3",
             "plants5",
             "tree1",
             "tree2",
-
             "shop",
           ]}
           selectedTile={selectedTiles.overlay}
@@ -104,7 +111,6 @@ const TilePaletteMenu = ({
       {activeLayer === "events" && (
         <TilePalette
           title="Events"
-          // Events keys remain unchanged.
           tiles={[
             "boy",
             "girl",

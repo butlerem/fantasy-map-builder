@@ -6,6 +6,8 @@ import Toolbar from "./components/Toolbar";
 
 function App() {
   const [activeLayer, setActiveLayer] = useState("base");
+  const [drawingTool, setDrawingTool] = useState("pencil");
+
   const [selectedTiles, setSelectedTiles] = useState({
     base: "grass",
     overlay: "flower",
@@ -20,6 +22,7 @@ function App() {
           <MapCanvas
             activeLayer={activeLayer}
             selectedTile={selectedTiles[activeLayer]}
+            drawingTool={drawingTool}
           />
         </div>
         <div className="tile-palette-container">
@@ -28,6 +31,8 @@ function App() {
             setActiveLayer={setActiveLayer}
             selectedTiles={selectedTiles}
             setSelectedTiles={setSelectedTiles}
+            onToolSelect={setDrawingTool}
+            drawingTool={drawingTool}
           />
         </div>
       </div>

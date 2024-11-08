@@ -49,6 +49,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   gap: 10px;
   overflow: auto;
 }
@@ -56,9 +58,10 @@ body {
 .canvas-container {
   flex: 3;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   overflow: auto;
+  max-width: 800px;
 }
 
 .canvas-container canvas {
@@ -73,6 +76,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   height: 95%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -137,5 +141,14 @@ button.active {
   .tile-palette-container {
     width: 100%;
     max-width: none;
+  }
+  .toolbox .icon {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  .toolbox .icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 }
