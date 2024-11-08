@@ -1,5 +1,6 @@
 import React from "react";
 import tileImages from "../assets/tileImages";
+import { objects as objectDefinitions } from "../assets/mapObjects";
 import getFrameForEvent from "../assets/eventSprites";
 
 const TILE_SIZE = 48;
@@ -16,21 +17,32 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
     >
       <h3 style={{ marginBottom: "5px" }}>{title}</h3>
 
-      {/* Toolbox Grid */}
+      {/* Toolbox Grid (flex wrap) */}
       <div
+        className="toolbox"
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr",
-          gridTemplateRows: `repeat(${tiles.length}, ${TILE_SIZE}px)`,
-          gap: "5px",
-          padding: "5px",
-          border: "2px solid black",
-          background: "#ccc",
-          borderRadius: "5px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "10px",
+          // Increase maxWidth so 3 columns + padding + gap can fit
+          maxWidth: 200, // Try 200, 220, etc. if 3 columns don't fit
+          maxHeight: "400px",
+          overflowY: "auto",
+          boxSizing: "border-box",
         }}
       >
         {tiles.map((tile) => {
-          if (tile === null) return null; // Skip null since eraser is separate
+          if (tile === null) return null;
+
+          // Default dimensions for 1x1 tiles
+          let tileWidth = TILE_SIZE;
+          let tileHeight = TILE_SIZE;
+
+          // If in the objects layer and a multi-tile definition exists, update dimensions
+          if (layer === "overlay" && objectDefinitions[tile]) {
+            tileWidth = objectDefinitions[tile].gridWidth * TILE_SIZE;
+            tileHeight = objectDefinitions[tile].gridHeight * TILE_SIZE;
+          }
 
           let imgSrc = null;
           let spriteStyle = {};
@@ -51,17 +63,18 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
 
           return (
             <div
+              className="icon"
               key={tile}
               onClick={() => onSelect(tile)}
               style={{
-                width: TILE_SIZE,
-                height: TILE_SIZE,
+                width: tileWidth,
+                height: tileHeight,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 border:
                   selectedTile === tile
-                    ? "3px solid red"
+                    ? "3px solid white"
                     : "2px solid transparent",
                 cursor: "pointer",
                 background: "#eee",
@@ -90,24 +103,21 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
         })}
       </div>
 
-      {/* Show Eraser only for Overlay & Events layers */}
+      {/* Eraser option for non-base layers */}
       {layer !== "base" && (
         <div
+          className="eraser"
           onClick={() => onSelect(null)}
           style={{
-            width: TILE_SIZE,
-            height: TILE_SIZE,
             marginTop: "10px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            border:
-              selectedTile === null ? "3px solid red" : "2px solid transparent",
             cursor: "pointer",
-            background: "#eee",
-            fontSize: "14px",
-            fontWeight: "bold",
-            textAlign: "center",
+            border:
+              selectedTile === null
+                ? "3px solid white"
+                : "2px solid transparent",
           }}
         >
           Eraser

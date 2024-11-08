@@ -13,25 +13,29 @@ function App() {
   });
 
   return (
-    <div>
-      <Toolbar />
-      <div className="game-container">
-        <div className="game-screen">
-          <h1 className="game-title">Fantasy Map Builder</h1>
-          <div className="game-content">
-            {/* Pass the currently selected tile to MapCanvas */}
-            <MapCanvas
-              activeLayer={activeLayer}
-              selectedTile={selectedTiles[activeLayer]}
-            />
-            <TilePaletteMenu
-              activeLayer={activeLayer}
-              setActiveLayer={setActiveLayer}
-              selectedTiles={selectedTiles}
-              setSelectedTiles={setSelectedTiles}
-            />
-          </div>
-        </div>
+    <div className="game-screen">
+      <h1 className="game-title">Map Builder</h1>
+
+      {/* Centered canvas container */}
+      <div className="canvas-container">
+        <MapCanvas
+          activeLayer={activeLayer}
+          selectedTile={selectedTiles[activeLayer]}
+        />
+      </div>
+
+      <div className="toolbar-container">
+        <Toolbar />
+      </div>
+
+      {/* Tile palette menu overlay on the right side */}
+      <div className="tile-palette-container">
+        <TilePaletteMenu
+          activeLayer={activeLayer}
+          setActiveLayer={setActiveLayer}
+          selectedTiles={selectedTiles}
+          setSelectedTiles={setSelectedTiles}
+        />
       </div>
     </div>
   );
