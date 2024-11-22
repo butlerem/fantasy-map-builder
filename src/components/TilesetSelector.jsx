@@ -95,7 +95,7 @@ const TilesetSelector = ({ onSelect, selectedTile }) => {
             top: preview.top,
             width: preview.width,
             height: preview.height,
-            border: "2px dashed red",
+            border: "2px dashed cyan",
             pointerEvents: "none",
           }}
         />
@@ -109,7 +109,7 @@ const TilesetSelector = ({ onSelect, selectedTile }) => {
             top: selectedTile.sy,
             width: selectedTile.sw,
             height: selectedTile.sh,
-            border: "2px solid yellow",
+            border: "2px solid magenta",
             boxSizing: "border-box",
             pointerEvents: "none",
           }}

@@ -22,7 +22,8 @@ function App() {
     <div className="game-screen">
       {showWelcome && <WelcomeOverlay onDismiss={handleDismissWelcome} />}
 
-      <h1 className="game-title">Map Builder</h1>
+      {/*<h1 className="game-title">Map Builder</h1>*/}
+
       <div className="main-content">
         <div className="canvas-container">
           <MapCanvas

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   FaSun,
   FaPlay,
@@ -9,101 +9,80 @@ import {
   FaArrowDown,
 } from "react-icons/fa";
 
-function WelcomeOverlay({ onDismiss }) {
-  const [fadeOut, setFadeOut] = useState(false);
-  const [typedText, setTypedText] = useState("");
+const WelcomeOverlay = () => {
+  const [visible, setVisible] = useState(true);
+  const title = "Map Builder";
 
-  useEffect(() => {
-    const fullText = "Map Builder";
-    let currentIndex = 0;
-
-    const typingInterval = setInterval(() => {
-      setTypedText((prev) => prev + fullText[currentIndex]);
-      currentIndex++;
-      if (currentIndex >= fullText.length) {
-        clearInterval(typingInterval);
-      }
-    }, 100);
-
-    return () => clearInterval(typingInterval);
-  }, []);
-
+  // Handles the dismissal of the overlay with a fade-out animation
   const handleDismiss = () => {
-    setFadeOut(true);
+    const overlay = document.getElementById("welcome-overlay");
+    if (overlay) {
+      overlay.classList.add("fade-out");
+    }
     setTimeout(() => {
-      onDismiss();
-    }, 300);
+      setVisible(false);
+    }, 1000);
   };
 
+  if (!visible) return null;
+
   return (
-    <div className={`welcome-overlay ${fadeOut ? "fade-out" : ""}`}>
+    <div id="welcome-overlay" className="welcome-overlay">
       <div className="welcome-content">
-        {/* Typing effect in action */}
-        <h2>{typedText}</h2>
-
-        <p>Create and edit your own RPG map.</p>
-
-        {/* Remove bullet dots from the list */}
-        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-          <li>
-            <strong>Base Layer</strong>: Ground/terrain tiles (grass, roads,
-            water, etc.).
-          </li>
-          <li>
-            <strong>Object Layer</strong>: Buildings, trees, and other objects.
-          </li>
-          <li>
-            <strong>Event Layer</strong>: NPCs, animals, or special events.
-          </li>
-        </ul>
-
-        <p>Toolbar actions:</p>
-
-        {/* Remove bullet dots from the list */}
-        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-          <li>
-            <FaSun size={15} color="var(--white)" style={{ marginRight: 6 }} />
-            <strong>Season</strong>: Toggle between different season themes.
-          </li>
-          <li>
-            <FaPlay size={12} color="var(--white)" style={{ marginRight: 4 }} />
-            <FaPause
-              size={12}
-              color="var(--white)"
-              style={{ marginRight: 6 }}
-            />
-            <strong>Play/Pause</strong>: Toggle live mode for animations.
-          </li>
-          <li>
-            <FaCopy size={12} color="var(--white)" style={{ marginRight: 6 }} />
-            <strong>Clear</strong>: Wipe the entire canvas.
-          </li>
-          <li>
-            <FaSave size={12} color="var(--white)" style={{ marginRight: 6 }} />
-            <strong>Save Map</strong>: Save your current map layout.
-          </li>
-          <li>
-            <FaArrowUp
-              size={12}
-              color="var(--white)"
-              style={{ marginRight: 6 }}
-            />
-            <strong>Load Map</strong>: Load a previously saved map.
-          </li>
-          <li>
-            <FaArrowDown
-              size={12}
-              color="var(--white)"
-              style={{ marginRight: 6 }}
-            />
-            <strong>Sample Map</strong>: Load a prepared example map.
-          </li>
-        </ul>
-
-        <button onClick={handleDismiss}>Get Started</button>
+        <h2 className="welcome-title">{title}</h2>
+        <div className="menu-options">
+          {/* Animated triangle arrow */}
+          <div className="menu-arrow"></div>
+          <div className="menu-option">
+            <ul style={{ listStyle: "none", paddingLeft: 0, margin: 0 }}>
+              <li>Use the Map Builder to create your own custom RPG map!</li>
+            </ul>
+          </div>
+          <div className="menu-option">
+            <ul style={{ listStyle: "none", paddingLeft: 0, margin: 0 }}>
+              <li>Click and drag to draw terrain and object tiles.</li>
+            </ul>
+          </div>
+          <div className="menu-option">
+            <ul style={{ listStyle: "none", paddingLeft: 0, margin: 0 }}>
+              <li>NPCs will avoid water and objects in Live Mode.</li>
+            </ul>
+          </div>
+          <div className="menu-option">
+            <ul style={{ listStyle: "none", paddingLeft: 0, margin: 0 }}>
+              <li>
+                <FaSun size={15} color="#fff" style={{ marginRight: 6 }} />-
+                Change season theme
+              </li>
+              <li>
+                <FaPause size={12} color="#fff" style={{ marginRight: 6 }} />
+                <FaPlay size={12} color="#fff" style={{ marginRight: 6 }} />-
+                Toggle live mode
+              </li>
+              <li>
+                <FaCopy size={12} color="#fff" style={{ marginRight: 6 }} />-
+                Wipe the canvas
+              </li>
+              <li>
+                <FaSave size={12} color="#fff" style={{ marginRight: 6 }} />
+                <FaArrowUp size={12} color="#fff" style={{ marginRight: 6 }} />-
+                Save and load your map
+              </li>
+              <li>
+                <FaArrowDown
+                  size={12}
+                  color="#fff"
+                  style={{ marginRight: 6 }}
+                />
+                - Load a sample map
+              </li>
+            </ul>
+          </div>
+        </div>
+        <button onClick={handleDismiss}>Start</button>
       </div>
     </div>
   );
-}
+};
 
 export default WelcomeOverlay;

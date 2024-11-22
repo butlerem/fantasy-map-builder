@@ -1,8 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Anta&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
 :root {
-  font-family: "Anta", sans-serif;
+  font-family: "VT323", monospace;
   color: #f8fafc;
   --bg-color: #231e1c;
   --white: #f8fafc;
@@ -15,7 +16,7 @@
   --bar: hsl(0, 0%, 100%, 0.5);
 }
 
-/* GLOBAL RESET & BODY */
+/* Global */
 body {
   background-color: var(--bg-color);
   color: var(--white);
@@ -28,7 +29,7 @@ body {
   font-weight: 300;
 }
 
-/* GAME SCREEN */
+/* App/Game Screen */
 .game-screen {
   position: relative;
   width: clamp(450px, 65vmin, 900px);
@@ -46,16 +47,15 @@ body {
   gap: 10px;
 }
 
-/* TITLE */
+/* Title */
 .game-title {
-  font-size: 14px;
+  text-transform: uppercase;
+  font-size: 24px;
   text-align: center;
   margin-bottom: 8px;
-  text-transform: uppercase;
-  font-family: "Reddit Mono", monospace;
 }
 
-/* MAIN CONTENT */
+/* Content */
 .main-content {
   flex: 5;
   display: flex;
@@ -68,7 +68,7 @@ body {
   height: 100%;
 }
 
-/* CANVAS CONTAINER */
+/* Canvas */
 .canvas-container {
   flex: 6;
   display: flex;
@@ -86,7 +86,6 @@ body {
   display: block;
 }
 
-/* MENU WRAPPER */
 .menu-wrapper {
   display: flex;
   justify-content: space-between;
@@ -96,7 +95,7 @@ body {
   max-height: 30%;
 }
 
-/* PALETTE CONTAINER */
+/* Tile Palette */
 .tile-palette-container {
   flex: 4;
   display: flex;
@@ -109,7 +108,6 @@ body {
   box-shadow: 0 4px 10px var(--shadow-color);
 }
 
-/* TILE PALETTE */
 .tile-palette {
   display: flex;
   flex-direction: column;
@@ -119,7 +117,6 @@ body {
   width: 100%;
 }
 
-/* OBJECT LAYER SCROLL */
 .object-layer {
   display: flex;
   flex-direction: column;
@@ -131,7 +128,6 @@ body {
   overflow-y: auto;
 }
 
-/* Toolbox that holds the icons */
 .tile-palette .toolbox {
   display: flex;
   flex-wrap: wrap;
@@ -140,7 +136,7 @@ body {
   overflow-y: auto;
 }
 
-/* TOOLBAR CONTAINER */
+/* Toolbar */
 .toolbar-container {
   flex: 1;
   display: flex;
@@ -152,7 +148,6 @@ body {
   box-shadow: 0 4px 10px var(--shadow-color);
 }
 
-/* TOOLBAR */
 .toolbar-container .toolbar {
   display: flex;
   flex-direction: column;
@@ -160,7 +155,6 @@ body {
   width: 100%;
 }
 
-/* BUTTONS IN TOOLBAR */
 .toolbar-container button {
   width: 100%;
   padding: 6px 8px;
@@ -168,7 +162,7 @@ body {
   color: var(--white);
   border: 1px solid var(--white);
   cursor: pointer;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 300;
   border-radius: 5px;
   text-align: left;
@@ -177,6 +171,35 @@ body {
 /* Hover color for toolbar buttons */
 .toolbar-container button:hover {
   background: var(--button-hover-bg);
+}
+
+/* Welcome overlay */
+.welcome-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+}
+
+.welcome-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.welcome-content {
+  background: #231e1c;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  padding: 20px 30px;
+  text-align: center;
 }
 
 /* WelcomeOverlay */
@@ -208,7 +231,76 @@ body {
   text-align: center;
 }
 
-/* ICONS */
+.welcome-title {
+  text-transform: uppercase;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.menu-options {
+  position: relative;
+  padding-left: 20px;
+}
+
+.menu-option {
+  margin-bottom: 10px;
+  padding: 5px 0;
+}
+
+.menu-option ul {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.menu-arrow {
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid #fff;
+  animation: pointer-cycle 10s infinite, arrow-flash 1.5s infinite;
+}
+
+/* Cycling animation: arrow moves top to bottom and returns to top */
+@keyframes pointer-cycle {
+  0% {
+    top: 10px;
+  }
+  30% {
+    top: 10px;
+  }
+  40% {
+    top: 45px;
+  }
+  60% {
+    top: 45px;
+  }
+  75% {
+    top: 85px;
+  }
+  85% {
+    top: 85px;
+  }
+  100% {
+    top: 10px;
+  }
+}
+
+/* Flashing animation arrow fades in and out */
+@keyframes arrow-flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Icons */
 .icon {
   border-radius: 4px;
   overflow: hidden;
@@ -220,15 +312,15 @@ body {
   transition: transform 0.15s ease;
 }
 
-/* GLOBAL BUTTON STYLES */
+/* Global button styles */
 button {
+  font-family: inherit;
   background: var(--button-bg);
   border: 1px solid var(--white);
   padding: 6px 12px;
   cursor: pointer;
   color: var(--white);
-  font-family: "Press Start 2P", sans-serif;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 300;
   border-radius: 6px;
 }
@@ -243,7 +335,7 @@ button.active {
   background: var(--button-active-bg);
 }
 
-/* LAYER BUTTONS */
+/* Layer buttons */
 .layer-buttons {
   display: flex;
   gap: 4px;
@@ -252,10 +344,10 @@ button.active {
 
 .layer-buttons button {
   padding: 4px 6px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
-/* RESPONSIVE: SMALLER SCREENS */
+/* Responsive to smaller screens */
 @media (max-width: 800px) {
   .game-screen {
     flex-direction: column;
@@ -278,7 +370,7 @@ button.active {
     height: auto;
   }
 
-  /* Toolbox icons smaller */
+  /* Toolbox icons */
   .toolbox .icon {
     width: 28px !important;
     height: 28px !important;
@@ -289,7 +381,6 @@ button.active {
     object-fit: contain;
   }
 
-  /* Hide button text, show only icons */
   .toolbar .button-text {
     display: none;
   }
