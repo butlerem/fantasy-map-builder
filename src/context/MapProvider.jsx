@@ -2,15 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { MapContext } from "./MapContext";
 import { saveMap, loadMap } from "../utils/storage";
 import { sampleMaps } from "../data/sampleMaps";
+import { BASE_TILE_SECTIONS } from "../assets/tileImages";
 
 const TILE_SIZE = 40;
 const WATER_TILES = new Set(["water", "water2", "water3", "water4"]);
 
 export default function MapProvider({ children }) {
   // Grid configuration and defaults
-  const GRID_HEIGHT = 16;
-  const GRID_WIDTH = 18;
-  const DEFAULT_TILE = "grass";
+  const GRID_HEIGHT = 24;
+  const GRID_WIDTH = 28;
+  const DEFAULT_TILE = { type: "grass" };
+
   const DEFAULT_OVERLAY_TILE = null;
 
   // Ref to track blocked cells (by overlay objects or water)
@@ -20,7 +22,7 @@ export default function MapProvider({ children }) {
   // State for base grid, overlay, animated events, and live mode toggle
   const [gridBase, setGridBase] = useState(
     Array.from({ length: GRID_HEIGHT }, () =>
-      Array.from({ length: GRID_WIDTH }, () => DEFAULT_TILE)
+      Array.from({ length: GRID_WIDTH }, () => ({ ...DEFAULT_TILE }))
     )
   );
   const [gridOverlay, setGridOverlay] = useState(
@@ -42,9 +44,24 @@ export default function MapProvider({ children }) {
     const y = Math.floor(((e.clientY - rect.top) * scaleY) / TILE_SIZE);
 
     if (layer === "base") {
+      // Ensure selectedTile is properly formatted
+      let wrapped;
+      if (typeof selectedTile === "string") {
+        wrapped = { type: selectedTile };
+      } else if (typeof selectedTile === "number") {
+        // Convert numeric tile index to proper type
+        const tileTypes = ["water", "sand", "grass", "road", "stone"];
+        const typeIndex = Math.floor(selectedTile / 12); // 12 tiles per section
+        wrapped = { type: tileTypes[typeIndex] };
+      } else {
+        wrapped = selectedTile;
+      }
+
+      console.log("Placing base tile:", wrapped, "at", x, y);
+
       setGridBase((prev) => {
         const newGrid = prev.map((row) => row.slice());
-        newGrid[y][x] = selectedTile;
+        newGrid[y][x] = wrapped;
         return newGrid;
       });
     } else if (layer === "overlay") {

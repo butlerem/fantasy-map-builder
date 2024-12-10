@@ -1,0 +1,111 @@
+.characterListWrapper {
+  position: absolute;
+  bottom: 2vmin;
+  left: 2vmin;
+  width: 65vmin;
+}
+
+.characterListLabel {
+  position: absolute;
+  top: -1vmin;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--burgundy);
+  color: var(--white);
+  padding: 0.4vmin 2vmin;
+  font-size: 1.5vmin;
+  clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+  z-index: 3;
+  text-align: center;
+}
+
+.characterListPanel {
+  position: relative;
+  background: var(--light-brown);
+  border: 0.25vmin solid var(--border-color);
+  padding: 1.6vmin;
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0.8vmin rgba(0, 0, 0, 0.05);
+}
+
+.characterListInnerBorder {
+  position: absolute;
+  top: 0.6vmin;
+  left: 0.6vmin;
+  right: 0.6vmin;
+  bottom: 0.6vmin;
+  border: 0.2vmin solid #a47a6a;
+  border-radius: var(--radius);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.characterListItems {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 0.4vmin;
+  position: relative;
+  z-index: 2;
+}
+
+.characterListItem {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4vmin;
+  border-radius: var(--radius);
+  background: var(--lighter-brown);
+  border: 0.2vmin solid transparent;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.characterListItem:hover {
+  border-color: var(--border-color);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.characterEntry {
+  display: flex;
+  align-items: center;
+  gap: 0.6vmin;
+}
+
+.characterSprite {
+  flex-shrink: 0;
+  width: 4.8vmin;
+  height: 4.8vmin;
+  border-radius: 0.4vmin;
+}
+
+.roleIconBox {
+  width: 2.6vmin;
+  height: 2.6vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 4vmin;
+}
+
+.characterInfo {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2vmin;
+  line-height: 1.1;
+}
+
+.characterName {
+  font-size: 1.6vmin;
+  font-weight: bold;
+  margin: 0;
+  color: var(--burgundy);
+}
+
+.characterRole {
+  font-size: 1.4vmin;
+  font-style: italic;
+  text-transform: capitalize;
+  margin: 0;
+  color: var(--burgundy);
+}
