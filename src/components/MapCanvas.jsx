@@ -198,7 +198,6 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     }
 
     // Overlay layer using the outdoor image.
-    // In MapCanvas.jsx, inside the overlay drawing loop:
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         const tileData = gridOverlay[y][x];
