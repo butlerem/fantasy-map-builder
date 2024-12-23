@@ -3,6 +3,9 @@ import TilePalette from "./TilePalette";
 import TilesetSelector from "./TilesetSelector";
 import { FaEraser } from "react-icons/fa";
 
+/**
+ * TilePaletteMenu component manages the layer selection and tile palettes for the map editor
+ */
 const TilePaletteMenu = ({
   activeLayer,
   setActiveLayer,
@@ -13,7 +16,7 @@ const TilePaletteMenu = ({
 }) => {
   return (
     <div className="tile-palette">
-      {/* Layer buttons */}
+      {/* Layer selection buttons */}
       <div className="layer-buttons">
         <button
           className={activeLayer === "base" ? "active" : ""}
@@ -35,26 +38,15 @@ const TilePaletteMenu = ({
         </button>
       </div>
 
-      {/* Base and events palettes */}
+      {/* Layer-specific palettes */}
       {activeLayer === "base" && (
         <TilePalette
           tiles={[
-            "water3",
-            "water2",
-            "water",
-            "grass",
-            "grass2",
-            "grass3",
-            "road2",
-            "road",
-            "sand",
-
-            "stone2",
-            "tile2",
-            "brick2",
-            "four",
-            "brick3",
-            "tile",
+            "water4", "water3", "water2", "water",
+            "grass", "grass2", "grass3",
+            "road2", "road",
+            "sand", "sand2",
+            "stone2", "tile2", "brick2", "four", "brick3", "tile",
           ]}
           selectedTile={selectedTiles.base}
           onSelect={(tile) =>
@@ -99,21 +91,9 @@ const TilePaletteMenu = ({
       {activeLayer === "events" && (
         <TilePalette
           tiles={[
-            "boy",
-            "girl",
-            "boy2",
-            "girl2",
-            "man",
-            "woman",
-            "man2",
-            "woman2",
-            "animal1",
-            "animal2",
-            "animal7",
-            "animal3",
-            "animal4",
-            "animal5",
-            "animal6",
+            "boy", "girl", "boy2", "girl2",
+            "boy3", "girl3", "boy4", "girl4",
+            "animal1", "animal2", "animal3", "animal4",
           ]}
           selectedTile={selectedTiles.events}
           onSelect={(tile) =>

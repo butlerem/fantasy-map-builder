@@ -4,7 +4,7 @@ import { saveMap, loadMap } from "../utils/storage";
 import { sampleMaps } from "../data/sampleMaps";
 
 const TILE_SIZE = 40;
-const WATER_TILES = new Set(["water", "water2", "water3"]);
+const WATER_TILES = new Set(["water", "water2", "water3", "water4"]);
 
 export default function MapProvider({ children }) {
   // Grid configuration and defaults
