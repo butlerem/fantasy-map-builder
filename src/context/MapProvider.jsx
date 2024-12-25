@@ -16,12 +16,13 @@ export default function MapProvider({ children }) {
       Array.from({ length: GRID_WIDTH }, () => DEFAULT_TILE)
     )
   );
+
   const [gridOverlay, setGridOverlay] = useState(
     Array.from({ length: GRID_HEIGHT }, () =>
       Array.from({ length: GRID_WIDTH }, () => DEFAULT_OVERLAY_TILE)
     )
   );
-  const [placedObjects, setPlacedObjects] = useState([]);
+
   const [animatedEvents, setAnimatedEvents] = useState([]);
   const [isLiveMode, setIsLiveMode] = useState(false);
 
@@ -43,54 +44,32 @@ export default function MapProvider({ children }) {
         return newGrid;
       });
     } else if (layer === "overlay") {
-      if (selectedTile === null) {
-        setGridOverlay((prev) => {
-          const newGrid = prev.map((row) => row.slice());
-          newGrid[y][x] = null;
-          return newGrid;
-        });
-      } else {
-        // Check if multi-tile selection (assumes 32x32 base cell size)
-        if (selectedTile.sw > 32 || selectedTile.sh > 32) {
-          const cols = selectedTile.sw / 32;
-          const rows = selectedTile.sh / 32;
-          setGridOverlay((prev) => {
-            const newGrid = prev.map((row) => row.slice());
-            for (let j = 0; j < rows; j++) {
-              for (let i = 0; i < cols; i++) {
-                // Stamp each cell in the block with its sub-tile info.
-                if (y + j < GRID_HEIGHT && x + i < GRID_WIDTH) {
-                  newGrid[y + j][x + i] = {
-                    tileSelection: selectedTile,
-                    offsetX: i,
-                    offsetY: j,
-                  };
-                }
-              }
-            }
-            return newGrid;
-          });
-        } else {
-          // Single-tile selection
-          setGridOverlay((prev) => {
-            const newGrid = prev.map((row) => row.slice());
-            newGrid[y][x] = selectedTile;
-            return newGrid;
-          });
-        }
-      }
+      setGridOverlay((prev) => {
+        const newGrid = prev.map((row) => row.slice());
+        newGrid[y][x] = selectedTile;
+        return newGrid;
+      });
     } else if (layer === "events") {
       if (selectedTile === null) {
+        // Remove event if eraser is selected
         setAnimatedEvents((prev) =>
-          prev.filter((ev) => !(ev.x === x && ev.y === y))
+          prev.filter((ev) => ev.x !== x || ev.y !== y)
         );
       } else {
         setAnimatedEvents((prev) => {
-          // Prevent placing multiple events on the same cell
+          // Prevent placing multiple events on the same tile
           if (prev.some((ev) => ev.x === x && ev.y === y)) return prev;
           return [
             ...prev,
-            { id: Date.now(), type: selectedTile, x, y, frame: 1 },
+            {
+              id: Date.now(),
+              type: selectedTile,
+              x,
+              y,
+              frame: 1,
+              direction: "down",
+              lastMoveTime: performance.now(),
+            },
           ];
         });
       }
@@ -109,13 +88,12 @@ export default function MapProvider({ children }) {
         Array.from({ length: GRID_WIDTH }, () => DEFAULT_OVERLAY_TILE)
       )
     );
-    setPlacedObjects([]);
     setAnimatedEvents([]);
   };
 
   // Save and load map handlers.
   const handleSave = () => {
-    const mapData = { gridBase, gridOverlay, placedObjects, animatedEvents };
+    const mapData = { gridBase, gridOverlay, animatedEvents };
     saveMap(mapData);
   };
   const handleLoad = () => {
@@ -123,49 +101,91 @@ export default function MapProvider({ children }) {
     if (savedMap) {
       setGridBase(savedMap.gridBase);
       setGridOverlay(savedMap.gridOverlay);
-      setPlacedObjects(savedMap.placedObjects || []);
-      setAnimatedEvents(savedMap.animatedEvents);
+      setAnimatedEvents(savedMap.animatedEvents || []);
     }
   };
 
   // Animation loop for events.
   useEffect(() => {
-    if (!isLiveMode) return;
+    if (!isLiveMode) return; // Stops animation when Live Mode is off
 
     let animationFrameId;
-    let lastTime = performance.now();
-
     const animate = (time) => {
-      if (time - lastTime > 250) {
-        lastTime = time;
-        setAnimatedEvents((prev) =>
-          prev.map((event) => ({
+      if (!isLiveMode) return;
+
+      setAnimatedEvents((prev) =>
+        prev.map((event) => {
+          let newFrame = event.frame;
+          let newX = event.x;
+          let newY = event.y;
+          let newDirection = event.direction;
+          let moveTime = event.lastMoveTime;
+          let frameTime = event.frameTime || 0;
+
+          // Change frame every 250ms (for smooth walking)
+          if (time - frameTime > 250) {
+            newFrame = (event.frame + 1) % 3; // Cycle 3 walking frames naturally
+            frameTime = time; // Update the last frame update time
+          }
+
+          // Movement: Only update every 800ms
+          if (time - event.lastMoveTime > 800) {
+            const randomMove = Math.random();
+            if (randomMove < 0.25) {
+              newY -= 1; // Move Up
+              newDirection = "up";
+            } else if (randomMove < 0.5) {
+              newY += 1; // Move Down
+              newDirection = "down";
+            } else if (randomMove < 0.75) {
+              newX -= 1; // Move Left
+              newDirection = "left";
+            } else {
+              newX += 1; // Move Right
+              newDirection = "right";
+            }
+            moveTime = time;
+          }
+
+          // Ensure NPCs stay inside the map grid
+          newX = Math.max(0, Math.min(GRID_WIDTH - 1, newX));
+          newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY));
+
+          return {
             ...event,
-            frame: (event.frame + 1) % 3,
-          }))
-        );
-      }
+            x: newX,
+            y: newY,
+            frame: newFrame, // Walking animation cycles
+            direction: newDirection,
+            lastMoveTime: moveTime,
+            frameTime: frameTime, // Store last frame update time
+          };
+        })
+      );
+
       animationFrameId = requestAnimationFrame(animate);
     };
 
     animationFrameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isLiveMode]);
+  }, [isLiveMode]); // Fix: Depend on isLiveMode
 
-  // Provide all state and handler functions via context.
-  const value = {
-    gridBase,
-    setGridBase,
-    gridOverlay,
-    placedObjects,
-    animatedEvents,
-    isLiveMode,
-    setIsLiveMode,
-    updateTile,
-    clearCanvas,
-    handleSave,
-    handleLoad,
-  };
-
-  return <MapContext.Provider value={value}>{children}</MapContext.Provider>;
+  return (
+    <MapContext.Provider
+      value={{
+        gridBase,
+        setGridBase,
+        gridOverlay,
+        animatedEvents,
+        isLiveMode,
+        setIsLiveMode,
+        updateTile,
+        clearCanvas,
+        handleSave,
+        handleLoad,
+      }}
+    >
+      {children}
+    </MapContext.Provider>
+  );
 }

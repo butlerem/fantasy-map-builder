@@ -251,7 +251,11 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
 
     // Animated events.
     animatedEvents.forEach((event) => {
-      const spriteData = getFrameForEvent(event.type, event.frame);
+      const spriteData = getFrameForEvent(
+        event.type,
+        event.frame,
+        event.direction
+      );
       if (spriteData && spriteData.image.complete) {
         ctx.drawImage(
           spriteData.image,
