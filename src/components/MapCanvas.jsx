@@ -1,19 +1,27 @@
-// src/components/MapCanvas.jsx
 import React, { useRef, useEffect } from "react";
 import tileImages from "../assets/tileImages";
+import getIdleFrameForEvent from "../assets/eventSprites";
 
 const TILE_SIZE = 32;
 const GRID_WIDTH = 18;
 const GRID_HEIGHT = 16;
 
-const MapCanvas = ({ gridBase, gridOverlay, onTileUpdate, activeLayer }) => {
+const MapCanvas = ({
+  gridBase,
+  gridOverlay,
+  gridEvents,
+  onTileUpdate,
+  activeLayer,
+}) => {
   const canvasRef = useRef(null);
 
-  // Function to draw the grid and all tiles
   const drawGrid = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Clear the canvas before drawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // --- Draw Base Layer ---
@@ -22,6 +30,7 @@ const MapCanvas = ({ gridBase, gridOverlay, onTileUpdate, activeLayer }) => {
         const tileType = gridBase[y][x];
         const img = tileImages[tileType];
         if (img && img.complete) {
+          // Draw the image if it has fully loaded
           ctx.drawImage(
             img,
             x * TILE_SIZE,
@@ -30,17 +39,17 @@ const MapCanvas = ({ gridBase, gridOverlay, onTileUpdate, activeLayer }) => {
             TILE_SIZE
           );
         } else {
-          // Fallback: fill with white if image isn't loaded yet
+          // Fallback: fill the tile area with white if the image isn't ready
           ctx.fillStyle = "#fff";
           ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-          // Attach onload callback to re-draw when image is ready
+          // Attach an onload handler to re-draw when the image loads
           if (img && !img.onload) {
             img.onload = () => {
               drawGrid();
             };
           }
         }
-        // Draw grid border for clarity
+        // Draw a border around each tile for clarity
         ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
       }
     }
@@ -52,6 +61,7 @@ const MapCanvas = ({ gridBase, gridOverlay, onTileUpdate, activeLayer }) => {
         if (tileType) {
           const img = tileImages[tileType];
           if (img && img.complete) {
+            // Draw the overlay image if it has loaded
             ctx.drawImage(
               img,
               x * TILE_SIZE,
@@ -60,6 +70,7 @@ const MapCanvas = ({ gridBase, gridOverlay, onTileUpdate, activeLayer }) => {
               TILE_SIZE
             );
           } else if (img && !img.onload) {
+            // Attach onload handler if the overlay image is not yet loaded
             img.onload = () => {
               drawGrid();
             };
@@ -67,11 +78,37 @@ const MapCanvas = ({ gridBase, gridOverlay, onTileUpdate, activeLayer }) => {
         }
       }
     }
+
+    // --- Draw Events Layer ---
+    for (let y = 0; y < GRID_HEIGHT; y++) {
+      for (let x = 0; x < GRID_WIDTH; x++) {
+        const eventType = gridEvents[y][x];
+        if (eventType) {
+          // Get the idle frame data for the given event type
+          const spriteData = getIdleFrameForEvent(eventType);
+          if (spriteData && spriteData.image.complete) {
+            ctx.drawImage(
+              spriteData.image,
+              spriteData.sx, // source x in the sprite sheet
+              spriteData.sy, // source y in the sprite sheet
+              spriteData.sWidth, // source width (FRAME_WIDTH)
+              spriteData.sHeight, // source height (FRAME_HEIGHT)
+              x * TILE_SIZE, // destination x on the canvas
+              y * TILE_SIZE, // destination y on the canvas
+              TILE_SIZE, // destination width (adjust as needed)
+              TILE_SIZE // destination height (adjust as needed)
+            );
+          } else if (spriteData && !spriteData.image.onload) {
+            spriteData.image.onload = () => drawGrid();
+          }
+        }
+      }
+    }
   };
 
-  // Use effect to re-draw the grid whenever grid state changes
+  // Re-draw the grid whenever the base or overlay grid state changes.
+  // Also, ensure that if any image hasn't loaded yet, attach an onload callback.
   useEffect(() => {
-    // Check that all images are loaded before drawing
     let allLoaded = true;
     Object.keys(tileImages).forEach((key) => {
       const img = tileImages[key];
@@ -87,13 +124,13 @@ const MapCanvas = ({ gridBase, gridOverlay, onTileUpdate, activeLayer }) => {
     if (allLoaded) {
       drawGrid();
     }
-  }, [gridBase, gridOverlay]);
+  }, [gridBase, gridOverlay, gridEvents]);
 
-  // Handle mouse events for drawing
+  // Handle mouse events for drawing on the canvas
   const handleMouseEvent = (e, eventType) => {
-    // Only process mouse move events if the left button is held down
+    // For "move" events, only proceed if the left mouse button is pressed (e.buttons === 1)
     if (eventType === "move" && e.buttons !== 1) return;
-    // Call the parent component's tile update handler if provided
+    // Call the parent handler for tile updates with the event and current active layer
     if (typeof onTileUpdate === "function") {
       onTileUpdate(e, activeLayer, eventType);
     }
@@ -104,7 +141,7 @@ const MapCanvas = ({ gridBase, gridOverlay, onTileUpdate, activeLayer }) => {
       ref={canvasRef}
       width={GRID_WIDTH * TILE_SIZE}
       height={GRID_HEIGHT * TILE_SIZE}
-      // Attach mouse event handlers
+      // Attach mouse event listeners for drawing
       onMouseDown={(e) => handleMouseEvent(e, "down")}
       onMouseMove={(e) => handleMouseEvent(e, "move")}
       onMouseUp={(e) => handleMouseEvent(e, "up")}
