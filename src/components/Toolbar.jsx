@@ -6,6 +6,7 @@ const Toolbar = ({ activeLayer, setActiveLayer, onClear, onSave, onLoad }) => {
       <div>Active Layer: {activeLayer}</div>
       <button onClick={() => setActiveLayer("base")}>Base Layer</button>
       <button onClick={() => setActiveLayer("overlay")}>Overlay Layer</button>
+      <button onClick={() => setActiveLayer("events")}>Events Layer</button>
       <button onClick={onClear}>Clear Canvas</button>
       <button onClick={onSave}>Save Map</button>
       <button onClick={onLoad}>Load Map</button>

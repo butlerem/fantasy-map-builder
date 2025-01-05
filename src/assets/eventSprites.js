@@ -29,10 +29,9 @@ const eventMapping = {
   // You can add additional events in the bottom row (indices 4-7)
 };
 
-// This function returns the sub-rectangle for the idle frame
-// of a given event type. The idle frame is defined as the frame
-// in the first row of the event block (row 0) and in the middle column (column 1).
-const getIdleFrameForEvent = (eventType) => {
+/// This function now accepts a frame index. For a walking cycle you might have 3 frames (0, 1, 2).
+// The idle (standing) frame can be the middle one (frame = 1) by default.
+const getFrameForEvent = (eventType, frameIndex = 1) => {
   const index = eventMapping[eventType];
   if (index === undefined) {
     console.warn(`No event mapping found for "${eventType}"`);
@@ -44,24 +43,22 @@ const getIdleFrameForEvent = (eventType) => {
       sHeight: FRAME_HEIGHT,
     };
   }
+  // Determine the block position in the sprite sheet.
   const blockColumn = index % EVENTS_PER_ROW;
   const blockRow = Math.floor(index / EVENTS_PER_ROW);
   const blockX = blockColumn * EVENT_BLOCK_WIDTH;
   const blockY = blockRow * EVENT_BLOCK_HEIGHT;
-  const idleCellColumn = 1;
-  const idleCellRow = 0;
-  const sx = blockX + idleCellColumn * FRAME_WIDTH;
-  const sy = blockY + idleCellRow * FRAME_HEIGHT;
 
-  console.log(eventType, {
-    index,
-    blockColumn,
-    blockRow,
-    blockX,
-    blockY,
-    sx,
-    sy,
-  });
+  // Use the frame index to select the proper column within the block.
+  // For example, if the block is 3 columns wide, then frameIndex mod 3 gives a value 0,1, or 2.
+  // For the idle (standing) state, you might default to 1.
+  const cellColumn = frameIndex % EVENT_BLOCK_COLUMNS;
+  // We'll assume the idle/walking frames are in the first row of the block.
+  const cellRow = 0;
+
+  // Compute the source coordinates.
+  const sx = blockX + cellColumn * FRAME_WIDTH;
+  const sy = blockY + cellRow * FRAME_HEIGHT;
 
   return {
     image: peopleImg,
@@ -72,4 +69,4 @@ const getIdleFrameForEvent = (eventType) => {
   };
 };
 
-export default getIdleFrameForEvent;
+export default getFrameForEvent;
