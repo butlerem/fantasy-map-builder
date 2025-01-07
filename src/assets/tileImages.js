@@ -3,6 +3,7 @@ import grass2Src from "./tiles/grass2.png";
 import grass3Src from "./tiles/grass3.png";
 import waterSrc from "./tiles/water.png";
 import water2Src from "./tiles/water2.png";
+import water3Src from "./tiles/water3.png";
 import roadSrc from "./tiles/road.png";
 import road2Src from "./tiles/road2.png";
 import tile from "./tiles/tile.png";
@@ -45,6 +46,7 @@ const tileImages = {
   grass3: createImage(grass3Src),
   water: createImage(waterSrc),
   water2: createImage(water2Src),
+  water3: createImage(water3Src),
   road: createImage(roadSrc),
   road2: createImage(road2Src),
   tile: createImage(tile),

@@ -40,21 +40,23 @@ const TilePaletteMenu = ({
         <TilePalette
           title="Base"
           tiles={[
+            "water3",
+            "water2",
+            "water",
             "grass",
             "grass2",
             "grass3",
-            "water",
-            "water2",
+
             "road2",
             "road",
-            "brick",
+
             "sand",
             "tile",
             "stone2",
             "tile2",
-            "stairs",
             "brick2",
-            "brick4",
+            "stairs",
+
             "three",
             "two",
             "one",
@@ -115,6 +117,13 @@ const TilePaletteMenu = ({
             "woman",
             "man2",
             "woman2",
+            "animal1",
+            "animal2",
+            "animal7",
+            "animal3",
+            "animal4",
+            "animal5",
+            "animal6",
           ]}
           selectedTile={selectedTiles.events}
           onSelect={(tile) =>
