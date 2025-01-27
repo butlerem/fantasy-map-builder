@@ -20,10 +20,16 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect }) => {
           {tile}
         </button>
       ))}
-      {/* For overlay layers, add an "Eraser" button to clear the tile */}
+      {/* Eraser buttons to remove objects or events */}
       {title.includes("Overlay") && (
         <button onClick={() => onSelect(null)} style={{ margin: "5px" }}>
-          Eraser
+          Object Eraser
+        </button>
+      )}
+
+      {title.includes("Overlay") && (
+        <button onClick={() => onSelect(null)} style={{ margin: "5px" }}>
+          Event Eraser
         </button>
       )}
     </div>

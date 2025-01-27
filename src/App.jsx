@@ -60,10 +60,17 @@ function App() {
         return newGrid;
       });
     } else if (layer === "events") {
-      setAnimatedEvents((prev) => [
-        ...prev,
-        { id: Date.now(), type: selectedTileEvents, x, y, frame: 1 },
-      ]);
+      if (selectedTileEvents === "erase-event") {
+        // Remove event if it exists at the clicked position
+        setAnimatedEvents((prev) =>
+          prev.filter((event) => !(event.x === x && event.y === y))
+        );
+      } else {
+        setAnimatedEvents((prev) => [
+          ...prev,
+          { id: Date.now(), type: selectedTileEvents, x, y, frame: 1 },
+        ]);
+      }
     }
   };
 
