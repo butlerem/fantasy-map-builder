@@ -1,6 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
-import getFrameForEvent from "../assets/eventSprites";
+import getFrameForEvent, { EVENT_DEFAULT_NAMES } from "../assets/eventSprites";
+import { Shield, Sword, Sparkles, Skull, Star } from "lucide-react";
+
+// Map roles/classes to icons
+const roleIcons = {
+  hero: Shield,
+  fighter: Sword,
+  healer: Sparkles,
+  enemy: Skull,
+  npc: Star,
+};
+
+const roleColors = {
+  hero: "#27ae60", // Royal Green
+  fighter: "#8e44ad", // Royal Purple
+  healer: "#00bcd4", // Cyan
+  enemy: "#c0392b", // Enemy Red
+  npc: "#7f8c8d", // Grey
+};
 
 /**
  * Renders a list of characters with their sprite.
@@ -11,8 +29,10 @@ const CharacterList = ({ characters, onCharacterClick }) => {
       <h3>Characters</h3>
       <div className="character-list-items">
         {characters.map((character, index) => {
-          // Get sprite frame for the character event type
+          const displayRole = character.role || "npc";
           const sprite = getFrameForEvent(character.type, 1);
+          const roleKey = displayRole.toLowerCase();
+          const roleColor = roleColors[roleKey] || roleColors.npc;
           const spriteStyle = sprite && {
             width: "42px",
             height: "42px",
@@ -22,14 +42,35 @@ const CharacterList = ({ characters, onCharacterClick }) => {
             backgroundRepeat: "no-repeat",
           };
 
+          const displayName =
+            character.name || EVENT_DEFAULT_NAMES[character.type] || "Unnamed";
+
+          const RoleIcon =
+            roleIcons[displayRole.toLowerCase()] || roleIcons.default;
+
           return (
             <div
               key={character.id || index}
               className="character-list-item"
               onClick={() => onCharacterClick(character)}
-              title={`${character.name} - ${character.role || "No role"}`}
+              title={`${displayName} - ${displayRole}`}
             >
-              <div className="character-sprite" style={spriteStyle} />
+              <div className="character-entry">
+                <div className="character-sprite" style={spriteStyle} />
+                <div
+                  className="role-icon-box"
+                  style={{
+                    backgroundColor: `${roleColor}22`, // translucent background
+                    border: `0.2vmin solid ${roleColor}`,
+                  }}
+                >
+                  <RoleIcon size={16} strokeWidth={2} color={roleColor} />
+                </div>
+                <div className="character-info">
+                  <div className="character-name">{displayName}</div>
+                  <div className="character-role">{displayRole}</div>
+                </div>
+              </div>
             </div>
           );
         })}
