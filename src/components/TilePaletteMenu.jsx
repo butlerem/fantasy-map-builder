@@ -42,11 +42,23 @@ const TilePaletteMenu = ({
       {activeLayer === "base" && (
         <TilePalette
           tiles={[
-            "water4", "water3", "water2", "water",
-            "grass", "grass2", "grass3",
-            "road2", "road",
-            "sand", "sand2",
-            "stone2", "tile2", "brick2", "four", "brick3", "tile",
+            "water4",
+            "water3",
+            "water2",
+            "water",
+            "grass",
+            "grass2",
+            "grass3",
+            "road2",
+            "road",
+            "sand",
+            "sand2",
+            "brick2",
+            "stone2",
+            "tile2",
+
+            "four",
+            "brick3",
           ]}
           selectedTile={selectedTiles.base}
           onSelect={(tile) =>
@@ -91,9 +103,18 @@ const TilePaletteMenu = ({
       {activeLayer === "events" && (
         <TilePalette
           tiles={[
-            "boy", "girl", "boy2", "girl2",
-            "boy3", "girl3", "boy4", "girl4",
-            "animal1", "animal2", "animal3", "animal4",
+            "boy",
+            "girl",
+            "boy2",
+            "girl2",
+            "boy3",
+            "girl3",
+            "boy4",
+            "girl4",
+            "animal1",
+            "animal2",
+            "animal3",
+            "animal4",
           ]}
           selectedTile={selectedTiles.events}
           onSelect={(tile) =>

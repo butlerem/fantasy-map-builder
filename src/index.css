@@ -357,100 +357,88 @@ button.active {
 }
 
 /* ------------------------------------------------------------------------- */
-/*                          Welcome Overlay & Menu                           */
+/*                          Tutorial                                         */
 /* ------------------------------------------------------------------------- */
-.welcome-overlay {
+
+.tutorial-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-  z-index: 9999;
-}
-
-.welcome-overlay.fade-out {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.welcome-content {
+  top: 20px;
+  left: 20px;
+  width: 300px;
   background: #231e1c;
   border: 0.3vmin solid #fff;
   border-radius: 0.8vmin;
   padding: 2vmin 3vmin;
+  color: #fff;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.tutorial-overlay-step2 {
+  top: 50%;
+  left: auto;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
+.tutorial-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tutorial-content {
   text-align: center;
 }
 
-.welcome-title {
-  text-transform: uppercase;
-  font-size: 4vmin;
-  margin-bottom: 1vmin;
+.tutorial-sprite {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  background-repeat: no-repeat;
 }
 
-.menu-options {
-  position: relative;
-  padding-left: 2vmin;
+.tutorial-title {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 1.5em;
 }
 
-.menu-option {
-  margin-bottom: 1vmin;
-  padding: 0.5vmin 0;
+.tutorial-text {
+  margin: 10px 0;
+  font-size: 1em;
 }
 
-.menu-option ul {
+.tutorial-button-container {
   display: flex;
-  flex-direction: column;
-  gap: 1.5vmin;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-.menu-arrow {
-  position: absolute;
-  left: 0;
+.tutorial-arrow {
+  display: inline-block;
   width: 0;
   height: 0;
   border-top: 0.6vmin solid transparent;
   border-bottom: 0.6vmin solid transparent;
   border-left: 1vmin solid #fff;
-  animation: pointer-cycle 10s infinite, arrow-flash 1.5s infinite;
 }
 
-@keyframes pointer-cycle {
+.tutorial-button-container:hover .tutorial-arrow {
+  animation: arrow-nudge 2s infinite;
+}
+
+@keyframes arrow-nudge {
   0% {
-    top: 1vmin;
-  }
-  30% {
-    top: 1vmin;
-  }
-  40% {
-    top: 4.5vmin;
-  }
-  60% {
-    top: 4.5vmin;
-  }
-  75% {
-    top: 8.5vmin;
-  }
-  85% {
-    top: 8.5vmin;
-  }
-  100% {
-    top: 1vmin;
-  }
-}
-
-@keyframes arrow-flash {
-  0%,
-  100% {
-    opacity: 1;
+    transform: translateX(0);
   }
   50% {
-    opacity: 0.5;
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
 

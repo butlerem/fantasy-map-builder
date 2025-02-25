@@ -23,7 +23,6 @@ const Toolbar = () => {
 
   const { toggleSeason } = useContext(SeasonsContext);
 
-  // If you want the icon margin only when text is visible
   const iconStyle = { marginRight: "8px" };
 
   return (

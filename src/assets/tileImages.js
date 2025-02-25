@@ -7,7 +7,6 @@ import water3Src from "./tiles/water3.png";
 import water4Src from "./tiles/water4.png";
 import roadSrc from "./tiles/road.png";
 import road2Src from "./tiles/road2.png";
-import tile from "./tiles/tile.png";
 import brick from "./tiles/brick.png";
 import brick2 from "./tiles/brick2.png";
 import brick3 from "./tiles/brick3.png";
@@ -53,7 +52,6 @@ export const tileImages = {
   water4: createImage(water4Src),
   road: createImage(roadSrc),
   road2: createImage(road2Src),
-  tile: createImage(tile),
   brick: createImage(brick),
   brick2: createImage(brick2),
   brick3: createImage(brick3),
