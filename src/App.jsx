@@ -188,6 +188,22 @@ function App() {
     setIsDrawingOverlay(false);
   };
 
+  // Function to reset both layers to initial state
+  const clearCanvas = () => {
+    // Reset base layer: fill with DEFAULT_TILE
+    setGridBase(
+      Array.from({ length: GRID_HEIGHT }, () =>
+        Array.from({ length: GRID_WIDTH }, () => DEFAULT_TILE)
+      )
+    );
+    // Reset overlay layer: fill with DEFAULT_OVERLAY_TILE (null)
+    setGridOverlay(
+      Array.from({ length: GRID_HEIGHT }, () =>
+        Array.from({ length: GRID_WIDTH }, () => DEFAULT_OVERLAY_TILE)
+      )
+    );
+  };
+
   // Redraw the grid when either layer's state changes
   useEffect(() => {
     drawGrid();
@@ -199,6 +215,7 @@ function App() {
       <div>
         <button onClick={() => setActiveLayer("base")}>Base Layer</button>
         <button onClick={() => setActiveLayer("overlay")}>Overlay Layer</button>
+        <button onClick={clearCanvas}>Clear Canvas</button>
       </div>
 
       <div style={{ display: "flex" }}>
@@ -224,6 +241,7 @@ function App() {
               <button onClick={() => setSelectedTileBase("water")}>
                 Water
               </button>
+              <button onClick={() => setSelectedTileBase("road")}>Road</button>
             </div>
           )}
           {activeLayer === "overlay" && (
@@ -237,6 +255,9 @@ function App() {
               </button>
               <button onClick={() => setSelectedTileOverlay("rock")}>
                 Rock
+              </button>
+              <button onClick={() => setSelectedTileOverlay(null)}>
+                Eraser
               </button>
             </div>
           )}
