@@ -25,29 +25,25 @@ function App() {
     )
   );
 
-  // --- Events Layer State ---
-  const [gridEvents, setGridEvents] = useState(
-    Array.from({ length: GRID_HEIGHT }, () =>
-      Array.from({ length: GRID_WIDTH }, () => null)
-    )
-  );
+  // Instead of gridEvents (a 2D array), we now have an array of animated events.
+  // Each event object has a type, grid position, and a frame index.
+  const [animatedEvents, setAnimatedEvents] = useState([
+    { id: 1, type: "boy", x: 5, y: 10, frame: 1 },
+    { id: 2, type: "girl", x: 8, y: 12, frame: 1 },
+    // Add more events as needed.
+  ]);
 
-  // Track which layer is active
+  // Layer selection and palette state.
   const [activeLayer, setActiveLayer] = useState("base");
-
-  // Selected tiles for each layer
   const [selectedTileBase, setSelectedTileBase] = useState("grass");
   const [selectedTileOverlay, setSelectedTileOverlay] = useState("flower");
-  // NEW: Selected event type
   const [selectedTileEvents, setSelectedTileEvents] = useState("boy");
 
-  // Handle placing tiles/events on the grid
+  // Handler for updating a tile in the base or overlay layers.
   const handleTileUpdate = (e, layer, eventType) => {
-    // Only paint on mouse down or move
     if (eventType !== "down" && eventType !== "move") return;
-
     const rect = e.target.getBoundingClientRect();
-    const TILE_SIZE = 32;
+    const TILE_SIZE = 48; // Note: TILE_SIZE should match your cell size (48 in this case)
     const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
     const y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
 
@@ -63,17 +59,11 @@ function App() {
         newGrid[y][x] = selectedTileOverlay;
         return newGrid;
       });
-    } else if (layer === "events") {
-      // Place an event ID (e.g. "boy", "girl") in the grid
-      setGridEvents((prev) => {
-        const newGrid = prev.map((row) => row.slice());
-        newGrid[y][x] = selectedTileEvents; // store the event type
-        return newGrid;
-      });
     }
+    // For events, you might have a separate UI for placement.
   };
 
-  // Clear the base & overlay layers (you can decide if you want to clear events too)
+  // Clear all layers.
   const clearCanvas = () => {
     setGridBase(
       Array.from({ length: GRID_HEIGHT }, () =>
@@ -85,29 +75,45 @@ function App() {
         Array.from({ length: GRID_WIDTH }, () => DEFAULT_OVERLAY_TILE)
       )
     );
-    /* Clear events - to replace with delete event
-    setGridEvents(
-      Array.from({ length: GRID_HEIGHT }, () =>
-        Array.from({ length: GRID_WIDTH }, () => null)
-      )
-    ); */
+    setAnimatedEvents([]); // or reset to a default set if desired.
   };
 
-  // Save all layers to localStorage
+  // Save/load can be expanded to include animatedEvents if needed.
   const handleSave = () => {
-    const mapData = { gridBase, gridOverlay, gridEvents };
+    const mapData = { gridBase, gridOverlay, animatedEvents };
     saveMap(mapData);
   };
-
-  // Load all layers from localStorage
   const handleLoad = () => {
     const savedMap = loadMap();
     if (savedMap) {
       setGridBase(savedMap.gridBase);
       setGridOverlay(savedMap.gridOverlay);
-      setGridEvents(savedMap.gridEvents);
+      setAnimatedEvents(savedMap.animatedEvents);
     }
   };
+
+  // Animation loop for events: update each event's frame periodically.
+  useEffect(() => {
+    let animationFrameId;
+    let lastTime = performance.now();
+
+    const animate = (time) => {
+      // Update every 250ms (adjust for desired animation speed)
+      if (time - lastTime > 250) {
+        lastTime = time;
+        setAnimatedEvents((prevEvents) =>
+          prevEvents.map((event) => ({
+            ...event,
+            frame: (event.frame + 1) % 3, // Cycle through 0, 1, 2 (assuming 3 frames per event)
+          }))
+        );
+      }
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
 
   return (
     <div>
@@ -118,18 +124,15 @@ function App() {
         onSave={handleSave}
         onLoad={handleLoad}
       />
-
       <div style={{ display: "flex" }}>
         <MapCanvas
           gridBase={gridBase}
           gridOverlay={gridOverlay}
-          gridEvents={gridEvents}
+          animatedEvents={animatedEvents}
           onTileUpdate={handleTileUpdate}
           activeLayer={activeLayer}
         />
-
         <div style={{ marginLeft: 20 }}>
-          {/* Show different palettes based on the active layer */}
           {activeLayer === "base" && (
             <TilePalette
               title="Base Layer Palette"
@@ -141,7 +144,7 @@ function App() {
           {activeLayer === "overlay" && (
             <TilePalette
               title="Overlay Layer Palette"
-              tiles={["flower", "bush", "rock", null /* eraser */]}
+              tiles={["flower", "bush", "rock", null]}
               selectedTile={selectedTileOverlay}
               onSelect={setSelectedTileOverlay}
             />
