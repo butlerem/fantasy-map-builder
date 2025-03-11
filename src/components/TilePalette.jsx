@@ -1,6 +1,5 @@
 import React from "react";
 import tileImages from "../assets/tileImages";
-import atlasObjects from "../assets/autoExteriorObjects";
 import getFrameForEvent from "../assets/eventSprites";
 import { FaPencilAlt, FaSquare, FaCircle, FaFillDrip } from "react-icons/fa";
 
@@ -42,23 +41,12 @@ const TilePalette = ({
           let imgSrc = null;
           let spriteStyle = {};
 
+          // Base layer: use images from tileImages.
           if (layer === "base") {
             imgSrc = tileImages[tile];
-          } else if (layer === "overlay") {
-            const objDef = atlasObjects[tile];
-            if (objDef) {
-              const frame = objDef.getFrame();
-              tileWidth = frame.w;
-              tileHeight = frame.h;
-              spriteStyle = {
-                width: tileWidth,
-                height: tileHeight,
-                backgroundImage: `url(${objDef.image.src})`,
-                backgroundPosition: `-${frame.x}px -${frame.y}px`,
-                backgroundSize: `${objDef.image.width}px ${objDef.image.height}px`,
-              };
-            }
-          } else if (layer === "events") {
+          }
+          // Events layer: use getFrameForEvent.
+          else if (layer === "events") {
             const eventSprite = getFrameForEvent(tile, 1);
             if (eventSprite) {
               tileWidth = eventSprite.sWidth;
@@ -112,6 +100,7 @@ const TilePalette = ({
           );
         })}
       </div>
+
       {layer === "base" && (
         <div
           className="shapes"

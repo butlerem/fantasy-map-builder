@@ -2,29 +2,37 @@ import React, { useRef, useEffect, useContext, useState } from "react";
 import { MapContext } from "../context/MapContext";
 import tileImages from "../assets/tileImages";
 import getFrameForEvent from "../assets/eventSprites";
-import objects from "../assets/autoExteriorObjects";
+// Import the outdoor tileset URL.
+import outdoorTileset from "../assets/maps/outdoor.png";
 
 const GRID_WIDTH = 18;
 const GRID_HEIGHT = 16;
-const TILE_SIZE = 46;
+const TILE_SIZE = 46; // on-canvas display size (even if source tiles are 32x32)
 
 const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
   const canvasRef = useRef(null);
-  // Access grid and update functions from MapContext
   const {
     gridBase,
+    setGridBase,
     gridOverlay,
-    placedObjects,
+    setGridOverlay,
     animatedEvents,
     updateTile,
-    setGridBase,
   } = useContext(MapContext);
 
-  // Local state to record the starting grid coordinate and current mouse position for shape preview.
+  // Create an Image instance for the outdoor tileset.
+  const outdoorImageRef = useRef(null);
+  if (!outdoorImageRef.current) {
+    const img = new Image();
+    img.src = outdoorTileset;
+    outdoorImageRef.current = img;
+  }
+
+  // Local state for shape preview.
   const [startPos, setStartPos] = useState(null);
   const [currentPos, setCurrentPos] = useState(null);
 
-  // Function to convert a mouse event into grid coordinates, accounting for canvas scaling.
+  // Convert mouse event to grid coordinates.
   const getGridCoords = (e) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
@@ -36,38 +44,56 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     };
   };
 
-  // Mouse down: draw a single tile (pencil) or record the starting position for a shape.
+  // Mouse event handlers.
   const handleMouseDown = (e) => {
-    if (activeLayer !== "base") {
+    // Always handle events layer normally.
+    if (activeLayer === "events") {
       updateTile(e, activeLayer, "down", selectedTile);
       return;
     }
-    // If fill tool is selected, fill the entire grid immediately.
-    if (drawingTool === "fill") {
-      setGridBase((prev) => prev.map((row) => row.map(() => selectedTile)));
-      // Optionally, reset the drawing tool back to pencil after fill.
-      // onToolSelect("pencil");  // if you have access to change it here, or do it in App.
+    // If eraser is selected (selectedTile is null), always update immediately.
+    if (selectedTile === null) {
+      updateTile(e, activeLayer, "down", selectedTile);
       return;
     }
-    // If using pencil tool, update as usual.
-    if (drawingTool === "pencil") {
+    // For base layer, if the fill tool is active, do a full fill.
+    if (activeLayer === "base" && drawingTool === "fill") {
+      setGridBase((prev) => prev.map((row) => row.map(() => selectedTile)));
+      return;
+    }
+    // For overlay, if fill is selected, treat it as pencil.
+    const effectiveTool =
+      activeLayer === "overlay" && drawingTool === "fill"
+        ? "pencil"
+        : drawingTool;
+    if (effectiveTool === "pencil") {
       updateTile(e, activeLayer, "down", selectedTile);
     } else {
-      // For shape tools, record the starting grid coordinate.
+      // For shape tools, record the start position.
       const pos = getGridCoords(e);
       setStartPos(pos);
-      setCurrentPos(pos); // Initialize preview position.
+      setCurrentPos(pos);
     }
   };
 
-  // Mouse move: update drawing. For shape tools, update current position for preview.
   const handleMouseMove = (e) => {
-    if (e.buttons === 0) return; // Only process if a button is pressed.
-    if (activeLayer !== "base") {
+    if (e.buttons === 0) return;
+    if (activeLayer === "events") {
       updateTile(e, activeLayer, "move", selectedTile);
       return;
     }
-    if (drawingTool === "pencil") {
+    // Eraser: always update immediately.
+    if (selectedTile === null) {
+      updateTile(e, activeLayer, "move", selectedTile);
+      return;
+    }
+    // For base layer with fill, no need to update on move.
+    if (activeLayer === "base" && drawingTool === "fill") return;
+    const effectiveTool =
+      activeLayer === "overlay" && drawingTool === "fill"
+        ? "pencil"
+        : drawingTool;
+    if (effectiveTool === "pencil") {
       updateTile(e, activeLayer, "move", selectedTile);
     } else if (startPos) {
       const pos = getGridCoords(e);
@@ -75,73 +101,79 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     }
   };
 
-  // Mouse up: finalize the shape drawing and clear preview states.
   const handleMouseUp = (e) => {
-    if (activeLayer !== "base") {
+    if (activeLayer === "events") {
       updateTile(e, activeLayer, "up", selectedTile);
       return;
     }
-    if (drawingTool === "pencil") {
+    if (selectedTile === null) {
+      updateTile(e, activeLayer, "up", selectedTile);
+      return;
+    }
+    // For base layer with fill, fill is already done.
+    if (activeLayer === "base" && drawingTool === "fill") return;
+    const effectiveTool =
+      activeLayer === "overlay" && drawingTool === "fill"
+        ? "pencil"
+        : drawingTool;
+    if (effectiveTool === "pencil") {
       updateTile(e, activeLayer, "up", selectedTile);
     } else if (startPos) {
       let endPos = getGridCoords(e);
-
-      // Force a minimum shape size if no drag occurred.
+      // Force a minimum shape of 1x1.
       if (startPos.x === endPos.x && startPos.y === endPos.y) {
         endPos = { x: startPos.x + 1, y: startPos.y + 1 };
       }
-
-      if (drawingTool === "rectangle") {
-        const xStart = Math.min(startPos.x, endPos.x);
-        const xEnd = Math.max(startPos.x, endPos.x);
-        const yStart = Math.min(startPos.y, endPos.y);
-        const yEnd = Math.max(startPos.y, endPos.y);
-        setGridBase((prev) => {
-          const newGrid = prev.map((row) => row.slice());
-          for (let y = yStart; y <= yEnd; y++) {
-            for (let x = xStart; x <= xEnd; x++) {
-              newGrid[y][x] = selectedTile;
-            }
-          }
-          return newGrid;
-        });
-      } else if (drawingTool === "circle") {
-        const centerX = (startPos.x + endPos.x) / 2;
-        const centerY = (startPos.y + endPos.y) / 2;
-        const radius =
-          Math.max(
-            Math.abs(endPos.x - startPos.x),
-            Math.abs(endPos.y - startPos.y)
-          ) / 2;
-        setGridBase((prev) => {
-          const newGrid = prev.map((row) => row.slice());
-          for (let y = 0; y < GRID_HEIGHT; y++) {
-            for (let x = 0; x < GRID_WIDTH; x++) {
-              if (
-                Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2) <=
-                Math.pow(radius, 2)
-              ) {
+      if (activeLayer === "base") {
+        if (drawingTool === "rectangle") {
+          const xStart = Math.min(startPos.x, endPos.x);
+          const xEnd = Math.max(startPos.x, endPos.x);
+          const yStart = Math.min(startPos.y, endPos.y);
+          const yEnd = Math.max(startPos.y, endPos.y);
+          setGridBase((prev) => {
+            const newGrid = prev.map((row) => row.slice());
+            for (let y = yStart; y <= yEnd; y++) {
+              for (let x = xStart; x <= xEnd; x++) {
                 newGrid[y][x] = selectedTile;
               }
             }
-          }
-          return newGrid;
-        });
+            return newGrid;
+          });
+        } else if (drawingTool === "circle") {
+          // (circle drawing code for base)
+        }
+      } else if (activeLayer === "overlay") {
+        if (drawingTool === "rectangle") {
+          const xStart = Math.min(startPos.x, endPos.x);
+          const xEnd = Math.max(startPos.x, endPos.x);
+          const yStart = Math.min(startPos.y, endPos.y);
+          const yEnd = Math.max(startPos.y, endPos.y);
+          setGridOverlay((prev) => {
+            const newGrid = prev.map((row) => row.slice());
+            for (let y = yStart; y <= yEnd; y++) {
+              for (let x = xStart; x <= xEnd; x++) {
+                newGrid[y][x] = selectedTile;
+              }
+            }
+            return newGrid;
+          });
+        } else if (drawingTool === "circle") {
+          // (Your existing circle drawing code for overlay)
+        }
       }
-      // Clear preview states.
       setStartPos(null);
       setCurrentPos(null);
     }
   };
 
-  // Draw the entire grid including base layer, overlay, objects, events, and preview shape.
+  // Draw the grid and layers.
   const drawGrid = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw Base Layer tiles.
+    // Base layer.
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         const tileType = gridBase[y][x];
@@ -165,51 +197,59 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
       }
     }
 
-    // Draw 1x1 Overlay Layer tiles.
+    // Overlay layer using the outdoor image.
+    // In MapCanvas.jsx, inside the overlay drawing loop:
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
-        const tileType = gridOverlay[y][x];
-        if (tileType) {
-          const img = tileImages[tileType];
-          if (img && img.complete) {
-            ctx.drawImage(
-              img,
-              x * TILE_SIZE,
-              y * TILE_SIZE,
-              TILE_SIZE,
-              TILE_SIZE
-            );
-          } else if (img && !img.onload) {
-            img.onload = () => drawGrid();
+        const tileData = gridOverlay[y][x];
+        if (tileData) {
+          const outdoorImg = outdoorImageRef.current;
+          if (tileData.tileSelection) {
+            // This is part of a multi-tile selection.
+            const { tileSelection, offsetX, offsetY } = tileData;
+            // Each sub-tile is 32x32.
+            const subSx = tileSelection.sx + offsetX * 32;
+            const subSy = tileSelection.sy + offsetY * 32;
+            const subSw = 32;
+            const subSh = 32;
+            if (outdoorImg.complete) {
+              ctx.drawImage(
+                outdoorImg,
+                subSx,
+                subSy,
+                subSw,
+                subSh,
+                x * TILE_SIZE,
+                y * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE
+              );
+            } else {
+              outdoorImg.onload = () => drawGrid();
+            }
+          } else {
+            // Single-tile selection.
+            if (outdoorImg.complete) {
+              ctx.drawImage(
+                outdoorImg,
+                tileData.sx,
+                tileData.sy,
+                tileData.sw,
+                tileData.sh,
+                x * TILE_SIZE,
+                y * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE
+              );
+            } else {
+              outdoorImg.onload = () => drawGrid();
+            }
           }
         }
       }
     }
 
-    // Draw placed multi-tile objects.
-    placedObjects.forEach((obj) => {
-      const def = objects[obj.type];
-      if (def) {
-        const frame = def.getFrame();
-        const gridSpanWidth = def.gridWidth * TILE_SIZE;
-        const gridSpanHeight = def.gridHeight * TILE_SIZE;
-        const offsetX = (gridSpanWidth - frame.w) / 2;
-        const offsetY = (gridSpanHeight - frame.h) / 2;
-        ctx.drawImage(
-          def.image,
-          frame.x,
-          frame.y,
-          frame.w,
-          frame.h,
-          obj.x * TILE_SIZE + offsetX,
-          obj.y * TILE_SIZE + offsetY,
-          frame.w,
-          frame.h
-        );
-      }
-    });
-
-    // Draw animated events.
+    // Animated events.
     animatedEvents.forEach((event) => {
       const spriteData = getFrameForEvent(event.type, event.frame);
       if (spriteData && spriteData.image.complete) {
@@ -229,7 +269,7 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
       }
     });
 
-    // Draw shape preview if applicable.
+    // Shape preview for rectangle or circle tools.
     const drawPreview = (ctx) => {
       if (!startPos || !currentPos || drawingTool === "pencil") return;
       ctx.save();
@@ -276,14 +316,7 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
 
   useEffect(() => {
     drawGrid();
-  }, [
-    gridBase,
-    gridOverlay,
-    placedObjects,
-    animatedEvents,
-    startPos,
-    currentPos,
-  ]);
+  }, [gridBase, gridOverlay, animatedEvents, startPos, currentPos]);
 
   return (
     <canvas

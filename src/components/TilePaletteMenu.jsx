@@ -1,18 +1,19 @@
-// In TilePaletteMenu.jsx
+// ... in TilePaletteMenu.jsx
 import React from "react";
 import TilePalette from "./TilePalette";
+import TilesetSelector from "./TilesetSelector";
 
 const TilePaletteMenu = ({
-  activeLayer, // Current active layer (base, overlay, or events)
-  setActiveLayer, // Function to change the active layer
-  selectedTiles, // Object containing the selected tile for each layer
-  setSelectedTiles, // Function to update the selected tile for a given layer
+  activeLayer,
+  setActiveLayer,
+  selectedTiles,
+  setSelectedTiles,
   onToolSelect,
-  drawingTool, // Rename from setDrawingTool to onToolSelect to match the prop passed from App
+  drawingTool,
 }) => {
   return (
     <div className="tile-palette">
-      {/* Layer buttons */}
+      {/* Layer buttons remain the same */}
       <div className="layer-buttons">
         <button
           className={activeLayer === "base" ? "active" : ""}
@@ -34,7 +35,7 @@ const TilePaletteMenu = ({
         </button>
       </div>
 
-      {/* Render palette based on active layer */}
+      {/* Base and events palettes remain unchanged */}
       {activeLayer === "base" && (
         <TilePalette
           title="Base"
@@ -51,10 +52,8 @@ const TilePaletteMenu = ({
             "tile",
             "stone2",
             "tile2",
-
             "stairs",
             "brick2",
-
             "brick4",
             "three",
             "two",
@@ -68,46 +67,42 @@ const TilePaletteMenu = ({
             setSelectedTiles((prev) => ({ ...prev, base: tile }))
           }
           onToolSelect={onToolSelect}
-          drawingTool={drawingTool} // Forward the drawingTool
+          drawingTool={drawingTool}
           layer="base"
         />
       )}
 
       {activeLayer === "overlay" && (
-        <TilePalette
-          title="Objects"
-          tiles={[
-            "grass",
-            "rocks2",
-            "stump",
-            "rocks",
-            "flowers4",
-            "flower3",
-            "flower5",
-            "leaves",
-            "log",
-            "plant3",
-            "flower2",
-            "plants",
-            "flowers5",
-            "pot",
-            "flowers",
-            "flowers2",
-            "vines",
-            "fence7",
-            "fence3",
-            "plants5",
-            "tree1",
-            "tree2",
-            "shop",
-          ]}
-          selectedTile={selectedTiles.overlay}
-          onSelect={(tile) =>
-            setSelectedTiles((prev) => ({ ...prev, overlay: tile }))
-          }
-          layer="overlay"
-        />
+        <div className="tile-palette">
+          <h3>Objects</h3>
+          <TilesetSelector
+            selectedTile={selectedTiles.overlay}
+            onSelect={(tileData) =>
+              setSelectedTiles((prev) => ({ ...prev, overlay: tileData }))
+            }
+          />
+          <div
+            className="eraser"
+            onClick={() =>
+              setSelectedTiles((prev) => ({ ...prev, overlay: null }))
+            }
+            style={{
+              marginTop: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              border:
+                selectedTiles.overlay === null
+                  ? "3px solid white"
+                  : "2px solid transparent",
+            }}
+          >
+            Eraser
+          </div>
+        </div>
       )}
+
       {activeLayer === "events" && (
         <TilePalette
           title="Events"

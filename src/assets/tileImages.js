@@ -7,6 +7,9 @@ import roadSrc from "./tiles/road.png";
 import road2Src from "./tiles/road2.png";
 import tile from "./tiles/tile.png";
 import brick from "./tiles/brick.png";
+import brick2 from "./tiles/brick2.png";
+import brick3 from "./tiles/brick3.png";
+import brick4 from "./tiles/brick4.png";
 import oneSrc from "./tiles/1.png";
 import twoSrc from "./tiles/2.png";
 import threeSrc from "./tiles/3.png";
@@ -46,6 +49,9 @@ const tileImages = {
   road2: createImage(road2Src),
   tile: createImage(tile),
   brick: createImage(brick),
+  brick2: createImage(brick2),
+  brick3: createImage(brick3),
+  brick4: createImage(brick4),
 };
 
 export default tileImages;

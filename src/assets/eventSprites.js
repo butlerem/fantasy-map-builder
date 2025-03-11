@@ -6,8 +6,8 @@ const peopleImg = new Image();
 peopleImg.src = peopleSrc;
 
 // Define the dimensions of a single tile (cell) in the sprite sheet.
-export const FRAME_WIDTH = 48; // width of one cell in pixels
-export const FRAME_HEIGHT = 48; // height of one cell in pixels
+export const FRAME_WIDTH = 48;
+export const FRAME_HEIGHT = 48;
 
 // Each event occupies a block of 3 columns x 4 rows.
 export const EVENT_BLOCK_COLUMNS = 3;
@@ -16,8 +16,8 @@ export const EVENT_BLOCK_WIDTH = EVENT_BLOCK_COLUMNS * FRAME_WIDTH;
 export const EVENT_BLOCK_HEIGHT = EVENT_BLOCK_ROWS * FRAME_HEIGHT;
 
 // There are 12 columns total in the sprite sheet,
-// so the number of event blocks per row is:
-export const EVENTS_PER_ROW = 12 / EVENT_BLOCK_COLUMNS; // 4 in this case
+// so number of event blocks per row is:
+export const EVENTS_PER_ROW = 12 / EVENT_BLOCK_COLUMNS;
 
 // Map each event type to a block index (0 through 7).
 const eventMapping = {
@@ -52,7 +52,7 @@ const getFrameForEvent = (eventType, frameIndex = 1) => {
   const blockY = blockRow * EVENT_BLOCK_HEIGHT;
 
   // Use the frame index to select the proper column within the block.
-  // For example, if the block is 3 columns wide, then frameIndex mod 3 gives a value 0,1, or 2.
+  // If the block is 3 columns wide, then frameIndex mod 3 gives a value 0,1, or 2.
   // For the idle (standing) state, default to 1.
   const cellColumn = frameIndex % EVENT_BLOCK_COLUMNS;
   // We'll assume the idle/walking frames are in the first row of the block.
