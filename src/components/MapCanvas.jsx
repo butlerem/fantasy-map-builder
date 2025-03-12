@@ -1,20 +1,16 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
+import { MapContext } from "../context/MapContext";
 import tileImages from "../assets/tileImages";
-// Import the animated frame function (not getIdleFrameForEvent)
 import getFrameForEvent from "../assets/eventSprites";
 
 const TILE_SIZE = 48;
 const GRID_WIDTH = 18;
 const GRID_HEIGHT = 16;
 
-const MapCanvas = ({
-  gridBase,
-  gridOverlay,
-  animatedEvents, // Ensure you pass animatedEvents from App.jsx
-  onTileUpdate,
-  activeLayer,
-}) => {
+const MapCanvas = ({ activeLayer, selectedTile }) => {
   const canvasRef = useRef(null);
+  const { gridBase, gridOverlay, animatedEvents, updateTile } =
+    useContext(MapContext);
 
   const drawGrid = () => {
     const canvas = canvasRef.current;
@@ -73,14 +69,14 @@ const MapCanvas = ({
       if (spriteData && spriteData.image.complete) {
         ctx.drawImage(
           spriteData.image,
-          spriteData.sx, // source x in the sprite sheet
-          spriteData.sy, // source y in the sprite sheet
-          spriteData.sWidth, // source width
-          spriteData.sHeight, // source height
-          event.x * TILE_SIZE, // destination x on the canvas
-          event.y * TILE_SIZE, // destination y on the canvas
-          TILE_SIZE, // destination width
-          TILE_SIZE // destination height
+          spriteData.sx,
+          spriteData.sy,
+          spriteData.sWidth,
+          spriteData.sHeight,
+          event.x * TILE_SIZE,
+          event.y * TILE_SIZE,
+          TILE_SIZE,
+          TILE_SIZE
         );
       } else if (spriteData && !spriteData.image.onload) {
         spriteData.image.onload = () => drawGrid();
@@ -94,8 +90,9 @@ const MapCanvas = ({
 
   const handleMouseEvent = (e, eventType) => {
     if (eventType === "move" && e.buttons !== 1) return;
-    if (typeof onTileUpdate === "function") {
-      onTileUpdate(e, activeLayer, eventType);
+    if (typeof updateTile === "function") {
+      // Pass selectedTile from the UI to updateTile
+      updateTile(e, activeLayer, eventType, selectedTile);
     }
   };
 
