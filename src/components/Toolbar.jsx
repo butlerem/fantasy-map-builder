@@ -4,6 +4,7 @@ const Toolbar = ({
   activeLayer,
   setActiveLayer,
   isLiveMode,
+  setIsLiveMode,
   onClear,
   onSave,
   onLoad,
