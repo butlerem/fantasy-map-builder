@@ -1,7 +1,7 @@
-// src/components/Toolbar.jsx
 import React, { useContext } from "react";
 import { MapContext } from "../context/MapContext";
 
+// Toolbar accesses global map actions (live mode, clear, save, load) from MapContext.
 const Toolbar = () => {
   const { isLiveMode, setIsLiveMode, handleSave, handleLoad, clearCanvas } =
     useContext(MapContext);

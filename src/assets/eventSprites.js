@@ -20,16 +20,18 @@ export const EVENT_BLOCK_HEIGHT = EVENT_BLOCK_ROWS * FRAME_HEIGHT;
 export const EVENTS_PER_ROW = 12 / EVENT_BLOCK_COLUMNS; // 4 in this case
 
 // Map each event type to a block index (0 through 7).
-// For example, the "boy" event is the first block.
 const eventMapping = {
   boy: 0, // Block 0 (first event block)
-  girl: 1, // Block 1 (next block in the top row)
-  man: 2, // Block 2
-  woman: 3, // Block 3 (end of the top row)
-  // You can add additional events in the bottom row (indices 4-7)
+  girl: 1,
+  boy2: 2,
+  girl2: 3,
+  man: 4,
+  woman: 5,
+  man2: 6,
+  woman2: 7,
 };
 
-/// This function now accepts a frame index. For a walking cycle you might have 3 frames (0, 1, 2).
+/// This function now accepts a frame index. For a walking cycle, 3 frames (0, 1, 2).
 // The idle (standing) frame can be the middle one (frame = 1) by default.
 const getFrameForEvent = (eventType, frameIndex = 1) => {
   const index = eventMapping[eventType];
@@ -51,7 +53,7 @@ const getFrameForEvent = (eventType, frameIndex = 1) => {
 
   // Use the frame index to select the proper column within the block.
   // For example, if the block is 3 columns wide, then frameIndex mod 3 gives a value 0,1, or 2.
-  // For the idle (standing) state, you might default to 1.
+  // For the idle (standing) state, default to 1.
   const cellColumn = frameIndex % EVENT_BLOCK_COLUMNS;
   // We'll assume the idle/walking frames are in the first row of the block.
   const cellRow = 0;

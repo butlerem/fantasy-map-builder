@@ -1,68 +1,128 @@
+/* === Import Google Font === */
+@import url("https://fonts.googleapis.com/css2?family=Anta&display=swap");
+
+/* --- Global Style --- */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Anta", sans-serif;
+  color: #f8fafc;
+  --bg-color: #1c1f23;
+  --white: #f8fafc;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --button-bg: #1c1f23;
+  --button-hover-bg: #22262c;
+  --button-active-bg: #2b3036;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* --- General  --- */
 body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
   margin: 0;
+  padding: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.game-screen {
+  width: 1150px;
+  height: 650px;
+  background: var(--bg-color);
+  border: 5px solid var(--white);
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
 
-button {
+.game-title {
+  color: var(--white);
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* --- Canvas --- */
+.canvas-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.toolbar-container {
+  width: 98.5%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* --- Tile Palette --- */
+.tile-palette-container {
+  position: absolute;
+  font-size: 12px;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--toolbar-bg);
+
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.toolbox {
+  gap: 10px;
+  background: var(--button-active-bg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.eraser {
+  background: var(--button-active-bg);
+  border-radius: 8px;
+  font-size: 12px;
+  padding: 7px;
+  text-align: center;
+}
+
+.icon {
+  border-radius: 8px;
+}
+
+/* --- Buttons --- */
+button {
+  background: var(--button-bg);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: var(--text-color);
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+button:hover {
+  background: var(--button-hover-bg);
+}
+
+button.active {
+  background: var(--button-active-bg);
+}
+
+.layer-buttons {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.layer-buttons button {
+  padding: 5px 5px;
+  font-size: 10px;
 }
