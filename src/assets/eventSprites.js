@@ -32,40 +32,21 @@ const eventMapping = {
 };
 
 /// This function now accepts a frame index. For a walking cycle, 3 frames (0, 1, 2).
-// The idle (standing) frame can be the middle one (frame = 1) by default.
-const getFrameForEvent = (eventType, frameIndex = 1) => {
+const getFrameForEvent = (eventType, frameIndex = 1, direction = "down") => {
   const index = eventMapping[eventType];
-  if (index === undefined) {
-    console.warn(`No event mapping found for "${eventType}"`);
-    return {
-      image: peopleImg,
-      sx: 0,
-      sy: 0,
-      sWidth: FRAME_WIDTH,
-      sHeight: FRAME_HEIGHT,
-    };
-  }
-  // Determine the block position in the sprite sheet.
+  if (index === undefined) return null;
+
   const blockColumn = index % EVENTS_PER_ROW;
   const blockRow = Math.floor(index / EVENTS_PER_ROW);
   const blockX = blockColumn * EVENT_BLOCK_WIDTH;
   const blockY = blockRow * EVENT_BLOCK_HEIGHT;
 
-  // Use the frame index to select the proper column within the block.
-  // If the block is 3 columns wide, then frameIndex mod 3 gives a value 0,1, or 2.
-  // For the idle (standing) state, default to 1.
-  const cellColumn = frameIndex % EVENT_BLOCK_COLUMNS;
-  // We'll assume the idle/walking frames are in the first row of the block.
-  const cellRow = 0;
-
-  // Compute the source coordinates.
-  const sx = blockX + cellColumn * FRAME_WIDTH;
-  const sy = blockY + cellRow * FRAME_HEIGHT;
+  const directionRow = { down: 0, left: 1, right: 2, up: 3 }[direction];
 
   return {
     image: peopleImg,
-    sx,
-    sy,
+    sx: blockX + frameIndex * FRAME_WIDTH,
+    sy: blockY + directionRow * FRAME_HEIGHT,
     sWidth: FRAME_WIDTH,
     sHeight: FRAME_HEIGHT,
   };
