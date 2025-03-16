@@ -1,7 +1,5 @@
-/* === Import Google Font === */
 @import url("https://fonts.googleapis.com/css2?family=Anta&display=swap");
 
-/* --- Global Style --- */
 :root {
   font-family: "Anta", sans-serif;
   color: #f8fafc;
@@ -10,10 +8,9 @@
   --shadow-color: rgba(0, 0, 0, 0.5);
   --button-bg: #1c1f23;
   --button-hover-bg: #22262c;
-  --button-active-bg: #2b3036;
+  --button-active-bg: #23272b;
 }
 
-/* --- General  --- */
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -25,17 +22,20 @@ body {
   height: 100vh;
 }
 
+/* Game Screen */
 .game-screen {
-  width: 1150px;
-  height: 650px;
+  width: 90vw;
+  max-width: 1450px;
+  height: 85vh;
   background: var(--bg-color);
   border: 5px solid var(--white);
   border-radius: 20px;
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
-  position: relative;
   display: flex;
   flex-direction: column;
   padding: 10px;
+  gap: 10px;
+  overflow: hidden;
 }
 
 .game-title {
@@ -45,58 +45,56 @@ body {
   margin-bottom: 10px;
 }
 
-/* --- Canvas --- */
-.canvas-container {
+.main-content {
   flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow: auto;
+}
+
+.canvas-container {
+  flex: 3;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  overflow: auto;
+}
+
+.canvas-container canvas {
+  width: 100%;
+  height: auto;
+  max-width: 800px; /* Maximum zoom */
+  display: block;
+}
+
+.tile-palette-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 95%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--button-active-bg);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.icon {
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 2px;
 }
 
 .toolbar-container {
   width: 98.5%;
   display: flex;
   justify-content: center;
-  gap: 10px;
-  padding: 10px;
   border-radius: 8px;
 }
 
-/* --- Tile Palette --- */
-.tile-palette-container {
-  position: absolute;
-  font-size: 12px;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--toolbar-bg);
-
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.toolbox {
-  gap: 10px;
-  background: var(--button-active-bg);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.eraser {
-  background: var(--button-active-bg);
-  border-radius: 8px;
-  font-size: 12px;
-  padding: 7px;
-  text-align: center;
-}
-
-.icon {
-  border-radius: 8px;
-}
-
-/* --- Buttons --- */
 button {
   background: var(--button-bg);
   border: none;
@@ -125,4 +123,19 @@ button.active {
 .layer-buttons button {
   padding: 5px 5px;
   font-size: 10px;
+}
+
+@media (max-width: 800px) {
+  .game-screen {
+    flex-direction: column;
+    height: auto;
+  }
+  .main-content {
+    flex-direction: column;
+  }
+  .canvas-container,
+  .tile-palette-container {
+    width: 100%;
+    max-width: none;
+  }
 }
