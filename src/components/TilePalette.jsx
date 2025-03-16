@@ -1,13 +1,20 @@
-// src/components/TilePalette.jsx
 import React from "react";
 import tileImages from "../assets/tileImages";
-// Import atlas-based objects for the overlay layer.
 import atlasObjects from "../assets/autoExteriorObjects";
 import getFrameForEvent from "../assets/eventSprites";
+import { FaPencilAlt, FaSquare, FaCircle, FaFillDrip } from "react-icons/fa";
 
 const TILE_SIZE = 46;
 
-const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
+const TilePalette = ({
+  title,
+  tiles,
+  selectedTile,
+  onSelect,
+  onToolSelect,
+  layer,
+  drawingTool,
+}) => {
   return (
     <div
       style={{
@@ -19,7 +26,6 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
     >
       <h3 style={{ marginBottom: "5px" }}>{title}</h3>
 
-      {/* Toolbox Grid (flex wrap) */}
       <div
         className="toolbox"
         style={{
@@ -31,32 +37,19 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
       >
         {tiles.map((tile) => {
           if (tile === null) return null;
-
-          // Default dimensions for 1x1 tiles.
           let tileWidth = TILE_SIZE;
           let tileHeight = TILE_SIZE;
-
-          // Variables for rendering preview.
           let imgSrc = null;
           let spriteStyle = {};
 
           if (layer === "base") {
-            // For base layer, use individual tile images.
             imgSrc = tileImages[tile];
           } else if (layer === "overlay") {
-            // For overlay (objects) layer, look up the atlas object.
             const objDef = atlasObjects[tile];
             if (objDef) {
-              // Currently:
-              // tileWidth = objDef.gridWidth * TILE_SIZE;
-              // tileHeight = objDef.gridHeight * TILE_SIZE;
-
-              // Instead, use the object's actual frame dimensions:
               const frame = objDef.getFrame();
               tileWidth = frame.w;
               tileHeight = frame.h;
-
-              // Then apply background cropping at 1:1 scale:
               spriteStyle = {
                 width: tileWidth,
                 height: tileHeight,
@@ -66,13 +59,10 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
               };
             }
           } else if (layer === "events") {
-            // For events, use getFrameForEvent to get the cropped region.
             const eventSprite = getFrameForEvent(tile, 1);
             if (eventSprite) {
-              // Use the frame dimensions from the event sprite.
               tileWidth = eventSprite.sWidth;
               tileHeight = eventSprite.sHeight;
-              // Set inline style so that only the cropped region is shown.
               spriteStyle = {
                 width: tileWidth,
                 height: tileHeight,
@@ -101,9 +91,10 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
                 cursor: "pointer",
                 background: "#eee",
                 overflow: "hidden",
+                borderRadius: "4px",
+                margin: "2px",
               }}
             >
-              {/** For base layer, we render an <img>; for overlay and events, we render a div with background cropping */}
               {layer === "base" && imgSrc ? (
                 <img
                   src={imgSrc.src}
@@ -121,8 +112,74 @@ const TilePalette = ({ title, tiles, selectedTile, onSelect, layer }) => {
           );
         })}
       </div>
+      {layer === "base" && (
+        <div
+          className="shapes"
+          style={{
+            marginTop: "10px",
+            display: "flex",
+            gap: "5px",
+          }}
+        >
+          <button
+            onClick={() => onToolSelect("pencil")}
+            style={{
+              border:
+                drawingTool === "pencil"
+                  ? "3px solid white"
+                  : "2px solid transparent",
+              background: "none",
+              padding: "5px",
+              cursor: "pointer",
+            }}
+          >
+            <FaPencilAlt size={20} color="var(--white)" />
+          </button>
+          <button
+            onClick={() => onToolSelect("rectangle")}
+            style={{
+              border:
+                drawingTool === "rectangle"
+                  ? "3px solid white"
+                  : "2px solid transparent",
+              background: "none",
+              padding: "5px",
+              cursor: "pointer",
+            }}
+          >
+            <FaSquare size={20} color="var(--white)" />
+          </button>
+          <button
+            onClick={() => onToolSelect("circle")}
+            style={{
+              border:
+                drawingTool === "circle"
+                  ? "3px solid white"
+                  : "2px solid transparent",
+              background: "none",
+              padding: "5px",
+              cursor: "pointer",
+            }}
+          >
+            <FaCircle size={20} color="var(--white)" />
+          </button>
+          <button
+            onClick={() => onToolSelect("fill")}
+            style={{
+              border:
+                drawingTool === "fill"
+                  ? "3px solid white"
+                  : "2px solid transparent",
+              background: "none",
+              padding: "5px",
+              cursor: "pointer",
+            }}
+          >
+            <FaFillDrip size={20} color="var(--white)" />
+          </button>
+        </div>
+      )}
 
-      {/* Eraser option for non-base layers */}
       {layer !== "base" && (
         <div
           className="eraser"

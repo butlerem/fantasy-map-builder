@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MapContext } from "./MapContext";
 import { saveMap, loadMap } from "../utils/storage";
-// Import atlas-based objects from autoExteriorObjects.
 import objects from "../assets/autoExteriorObjects";
 
 const TILE_SIZE = 46;
@@ -149,6 +148,7 @@ export default function MapProvider({ children }) {
   // Provide all state and handler functions via context.
   const value = {
     gridBase,
+    setGridBase,
     gridOverlay,
     placedObjects,
     animatedEvents,
