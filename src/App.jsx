@@ -10,7 +10,7 @@ function App() {
 
   const [selectedTiles, setSelectedTiles] = useState({
     base: "grass",
-    overlay: "flower",
+    overlay: null,
     events: "boy",
   });
 

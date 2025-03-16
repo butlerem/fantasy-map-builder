@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MapContext } from "./MapContext";
 import { saveMap, loadMap } from "../utils/storage";
-import objects from "../assets/autoExteriorObjects";
 
 const TILE_SIZE = 46;
 
@@ -45,27 +44,34 @@ export default function MapProvider({ children }) {
       });
     } else if (layer === "overlay") {
       if (selectedTile === null) {
-        setPlacedObjects((prev) =>
-          prev.filter((obj) => {
-            const def = objects[obj.type];
-            if (!def) return true;
-            const withinX = x >= obj.x && x < obj.x + def.gridWidth;
-            const withinY = y >= obj.y && y < obj.y + def.gridHeight;
-            return !(withinX && withinY);
-          })
-        );
         setGridOverlay((prev) => {
           const newGrid = prev.map((row) => row.slice());
           newGrid[y][x] = null;
           return newGrid;
         });
       } else {
-        if (objects[selectedTile]) {
-          setPlacedObjects((prev) => [
-            ...prev,
-            { id: Date.now(), type: selectedTile, x, y },
-          ]);
+        // Check if multi-tile selection (assumes 32x32 base cell size)
+        if (selectedTile.sw > 32 || selectedTile.sh > 32) {
+          const cols = selectedTile.sw / 32;
+          const rows = selectedTile.sh / 32;
+          setGridOverlay((prev) => {
+            const newGrid = prev.map((row) => row.slice());
+            for (let j = 0; j < rows; j++) {
+              for (let i = 0; i < cols; i++) {
+                // Stamp each cell in the block with its sub-tile info.
+                if (y + j < GRID_HEIGHT && x + i < GRID_WIDTH) {
+                  newGrid[y + j][x + i] = {
+                    tileSelection: selectedTile,
+                    offsetX: i,
+                    offsetY: j,
+                  };
+                }
+              }
+            }
+            return newGrid;
+          });
         } else {
+          // Single-tile selection
           setGridOverlay((prev) => {
             const newGrid = prev.map((row) => row.slice());
             newGrid[y][x] = selectedTile;
@@ -80,6 +86,7 @@ export default function MapProvider({ children }) {
         );
       } else {
         setAnimatedEvents((prev) => {
+          // Prevent placing multiple events on the same cell
           if (prev.some((ev) => ev.x === x && ev.y === y)) return prev;
           return [
             ...prev,
