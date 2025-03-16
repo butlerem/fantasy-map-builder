@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { MapContext } from "./MapContext";
 import { saveMap, loadMap } from "../utils/storage";
-import { objects as objectDefinitions } from "../assets/mapObjects";
+// Import atlas-based objects from autoExteriorObjects.
+import objects from "../assets/autoExteriorObjects";
 
-export const TILE_SIZE = 34;
+const TILE_SIZE = 46;
 
 export default function MapProvider({ children }) {
   const GRID_HEIGHT = 16;
@@ -11,7 +12,7 @@ export default function MapProvider({ children }) {
   const DEFAULT_TILE = "grass";
   const DEFAULT_OVERLAY_TILE = null;
 
-  // Map layers
+  // Map layers state
   const [gridBase, setGridBase] = useState(
     Array.from({ length: GRID_HEIGHT }, () =>
       Array.from({ length: GRID_WIDTH }, () => DEFAULT_TILE)
@@ -26,50 +27,46 @@ export default function MapProvider({ children }) {
   const [animatedEvents, setAnimatedEvents] = useState([]);
   const [isLiveMode, setIsLiveMode] = useState(false);
 
-  // Update a tile based on mouse event
+  // Update a tile based on a mouse event.
   const updateTile = (e, layer, eventType, selectedTile) => {
     if (eventType !== "down" && eventType !== "move") return;
 
-    const rect = e.target.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
-    const y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+    const canvas = e.target;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = Math.floor(((e.clientX - rect.left) * scaleX) / TILE_SIZE);
+    const y = Math.floor(((e.clientY - rect.top) * scaleY) / TILE_SIZE);
 
     if (layer === "base") {
-      // --- Base Layer ---
       setGridBase((prev) => {
         const newGrid = prev.map((row) => row.slice());
         newGrid[y][x] = selectedTile;
         return newGrid;
       });
     } else if (layer === "overlay") {
-      // --- Overlay Layer ---
       if (selectedTile === null) {
-        // Eraser: remove multi-tile objects covering (x, y)
         setPlacedObjects((prev) =>
           prev.filter((obj) => {
-            const def = objectDefinitions[obj.type];
+            const def = objects[obj.type];
             if (!def) return true;
             const withinX = x >= obj.x && x < obj.x + def.gridWidth;
             const withinY = y >= obj.y && y < obj.y + def.gridHeight;
             return !(withinX && withinY);
           })
         );
-        // Clear any 1x1 overlay tile at (x, y)
         setGridOverlay((prev) => {
           const newGrid = prev.map((row) => row.slice());
           newGrid[y][x] = null;
           return newGrid;
         });
       } else {
-        // Place multi-tile or single-tile overlay
-        if (objectDefinitions[selectedTile]) {
-          // Multi-tile
+        if (objects[selectedTile]) {
           setPlacedObjects((prev) => [
             ...prev,
             { id: Date.now(), type: selectedTile, x, y },
           ]);
         } else {
-          // Single-tile
           setGridOverlay((prev) => {
             const newGrid = prev.map((row) => row.slice());
             newGrid[y][x] = selectedTile;
@@ -78,18 +75,13 @@ export default function MapProvider({ children }) {
         }
       }
     } else if (layer === "events") {
-      // --- Events Layer ---
       if (selectedTile === null) {
-        // Eraser: remove event at (x, y)
         setAnimatedEvents((prev) =>
           prev.filter((ev) => !(ev.x === x && ev.y === y))
         );
       } else {
-        // Place event if cell is free
         setAnimatedEvents((prev) => {
-          if (prev.some((ev) => ev.x === x && ev.y === y)) {
-            return prev; // already occupied
-          }
+          if (prev.some((ev) => ev.x === x && ev.y === y)) return prev;
           return [
             ...prev,
             { id: Date.now(), type: selectedTile, x, y, frame: 1 },
@@ -99,7 +91,7 @@ export default function MapProvider({ children }) {
     }
   };
 
-  // Clear the canvas layers
+  // Clear all canvas layers.
   const clearCanvas = () => {
     setGridBase(
       Array.from({ length: GRID_HEIGHT }, () =>
@@ -115,7 +107,7 @@ export default function MapProvider({ children }) {
     setAnimatedEvents([]);
   };
 
-  // Save/load handlers
+  // Save and load map handlers.
   const handleSave = () => {
     const mapData = { gridBase, gridOverlay, placedObjects, animatedEvents };
     saveMap(mapData);
@@ -130,7 +122,7 @@ export default function MapProvider({ children }) {
     }
   };
 
-  // Animation loop for events
+  // Animation loop for events.
   useEffect(() => {
     if (!isLiveMode) return;
 
@@ -154,7 +146,7 @@ export default function MapProvider({ children }) {
     return () => cancelAnimationFrame(animationFrameId);
   }, [isLiveMode]);
 
-  // Provide all states and functions via context
+  // Provide all state and handler functions via context.
   const value = {
     gridBase,
     gridOverlay,

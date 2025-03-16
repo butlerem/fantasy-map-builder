@@ -2,23 +2,21 @@ import React, { useRef, useEffect, useContext } from "react";
 import { MapContext } from "../context/MapContext";
 import tileImages from "../assets/tileImages";
 import getFrameForEvent from "../assets/eventSprites";
-import { TILE_SIZE } from "../context/MapProvider";
-import { objects as objectDefinitions } from "../assets/mapObjects";
+import objects from "../assets/autoExteriorObjects"; // Adjust the path if needed
 
 // Define the grid dimensions
 const GRID_WIDTH = 18;
 const GRID_HEIGHT = 16;
+const TILE_SIZE = 46;
 
-// MapCanvas renders the map canvas, draws layers using the state from MapContext,
-// Handles mouse events to update tiles based on user interactions.
 const MapCanvas = ({ activeLayer, selectedTile }) => {
   const canvasRef = useRef(null);
 
-  // Destructure grid data and the update function from the MapContext
+  // Destructure grid data and update functions from the MapContext
   const { gridBase, gridOverlay, placedObjects, animatedEvents, updateTile } =
     useContext(MapContext);
 
-  // Function to draw the entire grid including base, overlay, and animated events.
+  // Function to draw the entire grid including base, overlay, objects, and animated events.
   const drawGrid = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -52,41 +50,53 @@ const MapCanvas = ({ activeLayer, selectedTile }) => {
     }
 
     // --- Draw 1x1 Overlay Layer ---
+    // (Assuming overlay tiles are still drawn from tileImages)
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         const tileType = gridOverlay[y][x];
         if (tileType) {
-          // Skip multi-tile objects (they're drawn from placedObjects)
-          if (!objectDefinitions[tileType]) {
-            const img = tileImages[tileType];
-            if (img && img.complete) {
-              ctx.drawImage(
-                img,
-                x * TILE_SIZE,
-                y * TILE_SIZE,
-                TILE_SIZE,
-                TILE_SIZE
-              );
-            } else if (img && !img.onload) {
-              img.onload = () => drawGrid();
-            }
+          const img = tileImages[tileType];
+          if (img && img.complete) {
+            ctx.drawImage(
+              img,
+              x * TILE_SIZE,
+              y * TILE_SIZE,
+              TILE_SIZE,
+              TILE_SIZE
+            );
+          } else if (img && !img.onload) {
+            img.onload = () => drawGrid();
           }
         }
       }
     }
 
-    // --- Draw Placed Multi-Tile Objects ---
+    // --- Draw Placed Multi-Tile Objects Using the Atlas ---
+    // Here we use the new atlas objects from autoExteriorObjects.
     placedObjects.forEach((obj) => {
-      const { type, x, y } = obj;
-      const def = objectDefinitions[type];
-      const img = tileImages[type];
-      if (def && img && img.complete) {
+      const def = objects[obj.type];
+      if (def) {
+        const frame = def.getFrame();
+        // Calculate how many cells the object occupies based on its natural size.
+        const gridSpanWidth = def.gridWidth * TILE_SIZE;
+        const gridSpanHeight = def.gridHeight * TILE_SIZE;
+
+        // Instead of scaling the image to fill the grid span,
+        // draw it at its natural size (frame.w x frame.h)
+        // and compute offsets to center it in the grid area.
+        const offsetX = (gridSpanWidth - frame.w) / 2;
+        const offsetY = (gridSpanHeight - frame.h) / 2;
+
         ctx.drawImage(
-          img,
-          x * TILE_SIZE,
-          y * TILE_SIZE,
-          def.gridWidth * TILE_SIZE,
-          def.gridHeight * TILE_SIZE
+          def.image,
+          frame.x,
+          frame.y,
+          frame.w,
+          frame.h,
+          obj.x * TILE_SIZE + offsetX,
+          obj.y * TILE_SIZE + offsetY,
+          frame.w,
+          frame.h
         );
       }
     });
