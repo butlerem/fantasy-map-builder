@@ -1,46 +1,64 @@
+// src/components/TilePaletteMenu.jsx
 import React from "react";
 import TilePalette from "./TilePalette";
 
-// This component renders the menu for selecting the active layer (base, overlay, or events)
-// and displays the corresponding TilePalette based on the currently active layer.
 const TilePaletteMenu = ({
-  activeLayer, // current active layer
-  setActiveLayer, // change the active layer
-  selectedTiles, // object containing the selected tile for each layer
-  setSelectedTiles, //  update the selected tile for a given layer
+  activeLayer, // Current active layer (base, overlay, or events)
+  setActiveLayer, // Function to change the active layer
+  selectedTiles, // Object containing the selected tile for each layer
+  setSelectedTiles, // Function to update the selected tile for a given layer
 }) => {
   return (
     <div className="tile-palette">
-      {/* Layer buttons to switch between tile palettes */}
+      {/* Layer buttons */}
       <div className="layer-buttons">
         <button
           className={activeLayer === "base" ? "active" : ""}
           onClick={() => setActiveLayer("base")}
         >
-          Base
+          Base Layer
         </button>
         <button
           className={activeLayer === "overlay" ? "active" : ""}
           onClick={() => setActiveLayer("overlay")}
         >
-          Overlay
+          Object Layer
         </button>
         <button
           className={activeLayer === "events" ? "active" : ""}
           onClick={() => setActiveLayer("events")}
         >
-          Events
+          Event Layer
         </button>
       </div>
 
-      {/* Render the correct TilePalette based on the active layer */}
+      {/* Render palette based on active layer */}
       {activeLayer === "base" && (
         <TilePalette
-          title="Terrain"
-          tiles={["grass", "water", "road", "road2", "tile", "brick"]}
+          title="Base"
+          tiles={[
+            "grass",
+            "grass2",
+            "grass3",
+            "water",
+            "water2",
+            "road2",
+            "sand",
+            "stone2",
+            "tile2",
+            "road",
+
+            "tile",
+            "brick",
+            "three",
+            "two",
+            "one",
+            "five",
+            "four",
+            "stairs",
+          ]}
           selectedTile={selectedTiles.base}
           onSelect={(tile) =>
-            // Update the selected tile for the base layer
             setSelectedTiles((prev) => ({ ...prev, base: tile }))
           }
           layer="base"
@@ -50,21 +68,34 @@ const TilePaletteMenu = ({
         <TilePalette
           title="Objects"
           tiles={[
-            "flower",
-            "flower2",
-            "boat",
-            "flower3",
+            "grass",
+            "rocks2",
             "stump",
+            "rocks",
+            "flowers4",
+            "flower3",
+            "flower5",
+            "leaves",
+            "log",
+            "plant3",
+            "flower2",
+            "plants",
+            "flowers5",
+            "pot",
+            "flowers",
+            "flowers2",
 
-            "fountain",
+            "vines",
+            "fence7",
+            "fence3",
+            "plants5",
+            "tree1",
+            "tree2",
 
-            "tree",
-            "house",
-            "cabin",
+            "shop",
           ]}
           selectedTile={selectedTiles.overlay}
           onSelect={(tile) =>
-            // Update the selected tile for the overlay layer
             setSelectedTiles((prev) => ({ ...prev, overlay: tile }))
           }
           layer="overlay"
@@ -73,6 +104,7 @@ const TilePaletteMenu = ({
       {activeLayer === "events" && (
         <TilePalette
           title="Events"
+          // Events keys remain unchanged.
           tiles={[
             "boy",
             "girl",
@@ -85,7 +117,6 @@ const TilePaletteMenu = ({
           ]}
           selectedTile={selectedTiles.events}
           onSelect={(tile) =>
-            // Update the selected tile for the events layer
             setSelectedTiles((prev) => ({ ...prev, events: tile }))
           }
           layer="events"
