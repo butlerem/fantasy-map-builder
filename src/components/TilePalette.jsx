@@ -1,7 +1,13 @@
 import React from "react";
 import tileImages from "../assets/tileImages";
 import getFrameForEvent from "../assets/eventSprites";
-import { FaPencilAlt, FaSquare, FaCircle, FaFillDrip } from "react-icons/fa";
+import {
+  FaPencilAlt,
+  FaSquare,
+  FaCircle,
+  FaFillDrip,
+  FaEraser,
+} from "react-icons/fa";
 
 const TILE_SIZE = 46;
 
@@ -170,7 +176,7 @@ const TilePalette = ({
       )}
 
       {layer !== "base" && (
-        <div
+        <button
           className="eraser"
           onClick={() => onSelect(null)}
           style={{
@@ -185,8 +191,8 @@ const TilePalette = ({
                 : "2px solid transparent",
           }}
         >
-          Eraser
-        </div>
+          <FaEraser size={20} color="var(--white)" />
+        </button>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
-// ... in TilePaletteMenu.jsx
 import React from "react";
 import TilePalette from "./TilePalette";
 import TilesetSelector from "./TilesetSelector";
+import { FaEraser } from "react-icons/fa";
 
 const TilePaletteMenu = ({
   activeLayer,
@@ -13,7 +13,7 @@ const TilePaletteMenu = ({
 }) => {
   return (
     <div className="tile-palette">
-      {/* Layer buttons remain the same */}
+      {/* Layer buttons */}
       <div className="layer-buttons">
         <button
           className={activeLayer === "base" ? "active" : ""}
@@ -35,7 +35,7 @@ const TilePaletteMenu = ({
         </button>
       </div>
 
-      {/* Base and events palettes remain unchanged */}
+      {/* Base and events palettes */}
       {activeLayer === "base" && (
         <TilePalette
           title="Base"
@@ -83,7 +83,8 @@ const TilePaletteMenu = ({
               setSelectedTiles((prev) => ({ ...prev, overlay: tileData }))
             }
           />
-          <div
+
+          <button
             className="eraser"
             onClick={() =>
               setSelectedTiles((prev) => ({ ...prev, overlay: null }))
@@ -100,8 +101,8 @@ const TilePaletteMenu = ({
                   : "2px solid transparent",
             }}
           >
-            Eraser
-          </div>
+            <FaEraser size={20} color="var(--white)" />
+          </button>
         </div>
       )}
 

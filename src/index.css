@@ -3,12 +3,12 @@
 :root {
   font-family: "Anta", sans-serif;
   color: #f8fafc;
-  --bg-color: #1c1f23;
+  --bg-color: #231e1c;
   --white: #f8fafc;
   --shadow-color: rgba(0, 0, 0, 0.5);
-  --button-bg: #1c1f23;
-  --button-hover-bg: #22262c;
-  --button-active-bg: #23272b;
+  --button-bg: #231d1c;
+  --button-hover-bg: #2c2522;
+  --button-active-bg: #2b2523;
 }
 
 body {
