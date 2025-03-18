@@ -1,6 +1,15 @@
 import React, { useContext } from "react";
 import { MapContext } from "../context/MapContext";
-import { FaPlay, FaPause, FaCopy, FaSave, FaArrowUp } from "react-icons/fa";
+import {
+  FaSun,
+  FaPlay,
+  FaPause,
+  FaCopy,
+  FaSave,
+  FaArrowUp,
+  FaArrowDown,
+} from "react-icons/fa";
+import { SeasonsContext } from "../context/SeasonProvider";
 
 const Toolbar = () => {
   const {
@@ -12,37 +21,51 @@ const Toolbar = () => {
     handleLoadSample,
   } = useContext(MapContext);
 
+  const { toggleSeason } = useContext(SeasonsContext);
+
+  // If you want the icon margin only when text is visible
   const iconStyle = { marginRight: "8px" };
 
   return (
     <div className="toolbar">
+      <button onClick={toggleSeason}>
+        <FaSun size={15} color="var(--white)" style={iconStyle} />
+        <span className="button-text">Season</span>
+      </button>
+
       <button onClick={() => setIsLiveMode((prev) => !prev)}>
         {isLiveMode ? (
           <>
-            <FaPause size={20} color="var(--white)" style={iconStyle} />
-            Pause
+            <FaPause size={12} color="var(--white)" style={iconStyle} />
+            <span className="button-text">Pause</span>
           </>
         ) : (
           <>
-            <FaPlay size={20} color="var(--white)" style={iconStyle} />
-            Play
+            <FaPlay size={12} color="var(--white)" style={iconStyle} />
+            <span className="button-text">Play</span>
           </>
         )}
       </button>
+
       <button onClick={clearCanvas}>
-        <FaCopy size={20} color="var(--white)" style={iconStyle} />
-        Clear Canvas
+        <FaCopy size={12} color="var(--white)" style={iconStyle} />
+        <span className="button-text">Clear</span>
       </button>
+
       <button onClick={handleSave}>
-        <FaSave size={20} color="var(--white)" style={iconStyle} />
-        Save Map
+        <FaSave size={12} color="var(--white)" style={iconStyle} />
+        <span className="button-text">Save Map</span>
       </button>
+
       <button onClick={handleLoad}>
-        <FaArrowUp size={20} color="var(--white)" style={iconStyle} />
-        Load Map
+        <FaArrowUp size={12} color="var(--white)" style={iconStyle} />
+        <span className="button-text">Load Map</span>
       </button>
-      <button onClick={() => handleLoadSample("sample1")}>Load Sample 1</button>
-      <button onClick={() => handleLoadSample("sample2")}>Load Sample 2</button>
+
+      <button onClick={() => handleLoadSample("sample1")}>
+        <FaArrowDown size={12} color="var(--white)" style={iconStyle} />
+        <span className="button-text">Sample Map</span>
+      </button>
     </div>
   );
 };

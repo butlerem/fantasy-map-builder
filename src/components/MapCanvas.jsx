@@ -1,13 +1,35 @@
 import React, { useRef, useEffect, useContext, useState } from "react";
 import { MapContext } from "../context/MapContext";
+import { SeasonsContext } from "../context/SeasonProvider";
 import tileImages from "../assets/tileImages";
 import getFrameForEvent from "../assets/eventSprites";
-// Import the outdoor tileset URL.
 import outdoorTileset from "../assets/maps/outdoor.png";
+import { drawSnowEffect, drawLightStreamEffect } from "../utils/seasons";
 
 const GRID_WIDTH = 18;
 const GRID_HEIGHT = 16;
-const TILE_SIZE = 46; // on-canvas display size (even if source tiles are 32x32)
+const TILE_SIZE = 40; // on-canvas display size
+
+// Applies a tint based on the current season.
+const applySeasonTint = (ctx, season) => {
+  let tintColor = "rgba(255,255,255,0)";
+  switch (season) {
+    case "winter":
+      tintColor = "rgba(136, 113, 251, 0.16)";
+      break;
+    case "summer":
+      tintColor = "rgba(255, 132, 16, 0.17)";
+      break;
+    case "spring":
+    default:
+      tintColor = "rgba(149, 255, 0, 0.1)";
+      break;
+  }
+  ctx.globalCompositeOperation = "multiply";
+  ctx.fillStyle = tintColor;
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.globalCompositeOperation = "source-over"; // reset to default
+};
 
 const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
   const canvasRef = useRef(null);
@@ -19,6 +41,10 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     animatedEvents,
     updateTile,
   } = useContext(MapContext);
+  const { season } = useContext(SeasonsContext);
+
+  // State for seasonal effect: snow particles for winter.
+  const [snowParticles, setSnowParticles] = useState([]);
 
   // Create an Image instance for the outdoor tileset.
   const outdoorImageRef = useRef(null);
@@ -27,6 +53,19 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     img.src = outdoorTileset;
     outdoorImageRef.current = img;
   }
+
+  // Load the beams image for summer.
+  const beamsImageRef = useRef(null);
+  useEffect(() => {
+    const img = new Image();
+    // Update the path to match your assets folder.
+    img.src = "/assets/events/light1.png";
+    img.onload = () => {
+      beamsImageRef.current = img;
+      // Force a redraw now that the beams image is loaded.
+      drawGrid();
+    };
+  }, []);
 
   // Local state for shape preview.
   const [startPos, setStartPos] = useState(null);
@@ -46,22 +85,18 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
 
   // Mouse event handlers.
   const handleMouseDown = (e) => {
-    // Always handle events layer normally.
     if (activeLayer === "events") {
       updateTile(e, activeLayer, "down", selectedTile);
       return;
     }
-    // If eraser is selected (selectedTile is null), always update immediately.
     if (selectedTile === null) {
       updateTile(e, activeLayer, "down", selectedTile);
       return;
     }
-    // For base layer, if the fill tool is active, do a full fill.
     if (activeLayer === "base" && drawingTool === "fill") {
       setGridBase((prev) => prev.map((row) => row.map(() => selectedTile)));
       return;
     }
-    // For overlay, if fill is selected, treat it as pencil.
     const effectiveTool =
       activeLayer === "overlay" && drawingTool === "fill"
         ? "pencil"
@@ -69,7 +104,6 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     if (effectiveTool === "pencil") {
       updateTile(e, activeLayer, "down", selectedTile);
     } else {
-      // For shape tools, record the start position.
       const pos = getGridCoords(e);
       setStartPos(pos);
       setCurrentPos(pos);
@@ -82,12 +116,10 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
       updateTile(e, activeLayer, "move", selectedTile);
       return;
     }
-    // Eraser: always update immediately.
     if (selectedTile === null) {
       updateTile(e, activeLayer, "move", selectedTile);
       return;
     }
-    // For base layer with fill, no need to update on move.
     if (activeLayer === "base" && drawingTool === "fill") return;
     const effectiveTool =
       activeLayer === "overlay" && drawingTool === "fill"
@@ -110,7 +142,6 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
       updateTile(e, activeLayer, "up", selectedTile);
       return;
     }
-    // For base layer with fill, fill is already done.
     if (activeLayer === "base" && drawingTool === "fill") return;
     const effectiveTool =
       activeLayer === "overlay" && drawingTool === "fill"
@@ -120,7 +151,6 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
       updateTile(e, activeLayer, "up", selectedTile);
     } else if (startPos) {
       let endPos = getGridCoords(e);
-      // Force a minimum shape of 1x1.
       if (startPos.x === endPos.x && startPos.y === endPos.y) {
         endPos = { x: startPos.x + 1, y: startPos.y + 1 };
       }
@@ -158,7 +188,7 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
             return newGrid;
           });
         } else if (drawingTool === "circle") {
-          // (Your existing circle drawing code for overlay)
+          // (circle drawing code for overlay)
         }
       }
       setStartPos(null);
@@ -166,14 +196,14 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     }
   };
 
-  // Draw the grid and layers.
+  // drawGrid handles drawing all layers and applying seasonal effects.
   const drawGrid = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Base layer.
+    // Draw base layer.
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         const tileType = gridBase[y][x];
@@ -193,20 +223,17 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
             img.onload = () => drawGrid();
           }
         }
-        ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
       }
     }
 
-    // Overlay layer using the outdoor image.
+    // Draw overlay layer.
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         const tileData = gridOverlay[y][x];
         if (tileData) {
           const outdoorImg = outdoorImageRef.current;
           if (tileData.tileSelection) {
-            // This is part of a multi-tile selection.
             const { tileSelection, offsetX, offsetY } = tileData;
-            // Each sub-tile is 32x32.
             const subSx = tileSelection.sx + offsetX * 32;
             const subSy = tileSelection.sy + offsetY * 32;
             const subSw = 32;
@@ -227,7 +254,6 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
               outdoorImg.onload = () => drawGrid();
             }
           } else {
-            // Single-tile selection.
             if (outdoorImg.complete) {
               ctx.drawImage(
                 outdoorImg,
@@ -248,7 +274,7 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
       }
     }
 
-    // Animated events.
+    // Draw animated events.
     animatedEvents.forEach((event) => {
       const spriteData = getFrameForEvent(
         event.type,
@@ -272,14 +298,13 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
       }
     });
 
-    // Shape preview for rectangle or circle tools.
+    // Draw preview for shape tools.
     const drawPreview = (ctx) => {
       if (!startPos || !currentPos || drawingTool === "pencil") return;
       ctx.save();
       ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 3]);
-
       if (drawingTool === "rectangle") {
         const xStart = Math.min(startPos.x, currentPos.x);
         const xEnd = Math.max(startPos.x, currentPos.x);
@@ -315,11 +340,75 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     };
 
     drawPreview(ctx);
+    // Apply the seasonal tint.
+    applySeasonTint(ctx, season);
+
+    // Draw seasonal effects.
+    if (season === "winter") {
+      drawSnowEffect(ctx, snowParticles);
+    } else if (season === "summer") {
+      // Draw the beams image via our summer effect.
+      drawLightStreamEffect(ctx);
+    }
+
+    // Redraw grid lines on top.
+    ctx.save();
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = "#000"; // or "#fff"
+    ctx.lineWidth = 1;
+    for (let y = 0; y < GRID_HEIGHT; y++) {
+      for (let x = 0; x < GRID_WIDTH; x++) {
+        ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+      }
+    }
+    ctx.restore();
   };
 
+  // Initialize seasonal effects when season changes.
+  useEffect(() => {
+    if (season === "winter") {
+      const particles = Array.from({ length: 50 }, () => ({
+        x: Math.random() * (GRID_WIDTH * TILE_SIZE),
+        y: Math.random() * (GRID_HEIGHT * TILE_SIZE),
+        radius: 2 + Math.random() * 2,
+        speed: 0.5 + Math.random(),
+        opacity: 0.5 + Math.random() * 0.5,
+      }));
+      setSnowParticles(particles);
+    }
+  }, [season]);
+
+  // Redraw the grid whenever dependencies change.
   useEffect(() => {
     drawGrid();
-  }, [gridBase, gridOverlay, animatedEvents, startPos, currentPos]);
+  }, [
+    gridBase,
+    gridOverlay,
+    animatedEvents,
+    startPos,
+    currentPos,
+    season,
+    snowParticles,
+  ]);
+
+  // Animate seasonal effects (e.g., update snow particles).
+  useEffect(() => {
+    let animationFrameId;
+    const updateParticles = () => {
+      if (season === "winter") {
+        setSnowParticles((prev) =>
+          prev.map((p) => {
+            let newY = p.y + p.speed;
+            if (newY > GRID_HEIGHT * TILE_SIZE) newY = 0;
+            return { ...p, y: newY };
+          })
+        );
+      }
+      animationFrameId = requestAnimationFrame(updateParticles);
+    };
+    animationFrameId = requestAnimationFrame(updateParticles);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [season]);
 
   return (
     <canvas

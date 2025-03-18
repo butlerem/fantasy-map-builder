@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Anta&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap");
 
 :root {
   font-family: "Anta", sans-serif;
@@ -9,105 +10,193 @@
   --button-bg: #231d1c;
   --button-hover-bg: #2c2522;
   --button-active-bg: #2b2523;
+  --radius: 12px;
+  --padding: 64px;
+  --bar: hsl(0, 0%, 100%, 0.5);
 }
 
+/* GLOBAL RESET & BODY */
 body {
   background-color: var(--bg-color);
-  color: var(--text-color);
+  color: var(--white);
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  font-weight: 300;
 }
 
-/* Game Screen */
+/* GAME SCREEN */
 .game-screen {
-  width: 90vw;
-  max-width: 1450px;
+  position: relative;
+  width: clamp(450px, 65vmin, 900px);
+  aspect-ratio: 3 / 4;
   height: 85vh;
+  resize: both;
+  overflow: hidden;
   background: var(--bg-color);
-  border: 5px solid var(--white);
-  border-radius: 20px;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--white);
+  border-radius: var(--radius);
+  box-shadow: 0 5px 15px var(--shadow-color);
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 15px;
   gap: 10px;
-  overflow: hidden;
 }
 
+/* TITLE */
 .game-title {
-  color: var(--white);
-  font-size: 18px;
+  font-size: 14px;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  font-family: "Reddit Mono", monospace;
 }
 
+/* MAIN CONTENT */
 .main-content {
-  flex: 1;
+  flex: 5;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   overflow: auto;
+  scroll-snap-type: y mandatory;
+  height: 100%;
 }
 
+/* CANVAS CONTAINER */
 .canvas-container {
-  flex: 3;
+  flex: 6;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   overflow: auto;
-  max-width: 800px;
+  max-width: 900px;
+  scroll-snap-align: start;
 }
 
 .canvas-container canvas {
   width: 100%;
   height: auto;
-  max-width: 800px; /* Maximum zoom */
+  max-width: 900px;
   display: block;
 }
 
+/* MENU WRAPPER */
+.menu-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 8px;
+  padding: 8px;
+  max-height: 30%;
+}
+
+/* PALETTE CONTAINER */
 .tile-palette-container {
-  flex: 1;
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--button-active-bg);
+  padding: 8px;
+  border: 1px solid var(--white);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+/* TILE PALETTE */
+.tile-palette {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 95%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: var(--button-active-bg);
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  width: 100%;
 }
 
+/* OBJECT LAYER SCROLL */
+.object-layer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+/* Toolbox that holds the icons */
+.tile-palette .toolbox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* TOOLBAR CONTAINER */
+.toolbar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--button-bg);
+  padding: 3px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+/* TOOLBAR */
+.toolbar-container .toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+
+/* BUTTONS IN TOOLBAR */
+.toolbar-container button {
+  width: 100%;
+  padding: 6px 8px;
+  background: var(--button-bg);
+  color: var(--white);
+  border: 1px solid var(--white);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 300;
+  border-radius: 5px;
+  text-align: left;
+}
+
+/* Hover color for toolbar buttons */
+.toolbar-container button:hover {
+  background: var(--button-hover-bg);
+}
+
+/* ICONS */
 .icon {
   border-radius: 4px;
   overflow: hidden;
   margin: 2px;
 }
 
-.toolbar-container {
-  width: 98.5%;
-  display: flex;
-  justify-content: center;
-  border-radius: 8px;
-}
-
+/* GLOBAL BUTTON STYLES */
 button {
   background: var(--button-bg);
-  border: none;
-  padding: 10px 20px;
+  border: 1px solid var(--white);
+  padding: 6px 12px;
   cursor: pointer;
-  color: var(--text-color);
+  color: var(--white);
   font-family: "Press Start 2P", sans-serif;
-  font-size: 12px;
-  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 300;
+  border-radius: 6px;
 }
 
 button:hover {
@@ -118,17 +207,19 @@ button.active {
   background: var(--button-active-bg);
 }
 
+/* LAYER BUTTONS */
 .layer-buttons {
   display: flex;
-  gap: 5px;
-  margin-bottom: 10px;
+  gap: 4px;
+  margin-bottom: 8px;
 }
 
 .layer-buttons button {
-  padding: 5px 5px;
+  padding: 4px 6px;
   font-size: 10px;
 }
 
+/* RESPONSIVE: SMALLER SCREENS */
 @media (max-width: 800px) {
   .game-screen {
     flex-direction: column;
@@ -137,18 +228,41 @@ button.active {
   .main-content {
     flex-direction: column;
   }
+  .toolbar-palette-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .toolbar-container {
+    width: 100%;
+  }
   .canvas-container,
   .tile-palette-container {
     width: 100%;
     max-width: none;
+    height: auto;
   }
+
+  /* Toolbox icons smaller */
   .toolbox .icon {
-    width: 30px !important;
-    height: 30px !important;
+    width: 28px !important;
+    height: 28px !important;
   }
   .toolbox .icon img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+
+  /* Hide button text, show only icons */
+  .toolbar .button-text {
+    display: none;
+  }
+  .toolbar button svg {
+    margin-right: 0 !important;
+  }
+  .toolbar button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

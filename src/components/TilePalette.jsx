@@ -9,10 +9,9 @@ import {
   FaEraser,
 } from "react-icons/fa";
 
-const TILE_SIZE = 46;
+const TILE_SIZE = 40;
 
 const TilePalette = ({
-  title,
   tiles,
   selectedTile,
   onSelect,
@@ -26,11 +25,9 @@ const TilePalette = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        margin: "10px",
+        margin: "5px",
       }}
     >
-      <h3 style={{ marginBottom: "5px" }}>{title}</h3>
-
       <div
         className="toolbox"
         style={{
@@ -80,13 +77,13 @@ const TilePalette = ({
                 justifyContent: "center",
                 border:
                   selectedTile === tile
-                    ? "3px solid white"
-                    : "2px solid transparent",
+                    ? "2px solid white"
+                    : "1px solid transparent",
                 cursor: "pointer",
                 background: "#eee",
                 overflow: "hidden",
                 borderRadius: "4px",
-                margin: "2px",
+                margin: "1px",
               }}
             >
               {layer === "base" && imgSrc ? (
@@ -121,56 +118,56 @@ const TilePalette = ({
             style={{
               border:
                 drawingTool === "pencil"
-                  ? "3px solid white"
-                  : "2px solid transparent",
+                  ? "1px solid white"
+                  : "1px solid transparent",
               background: "none",
               padding: "5px",
               cursor: "pointer",
             }}
           >
-            <FaPencilAlt size={20} color="var(--white)" />
+            <FaPencilAlt size={15} color="var(--white)" />
           </button>
           <button
             onClick={() => onToolSelect("rectangle")}
             style={{
               border:
                 drawingTool === "rectangle"
-                  ? "3px solid white"
-                  : "2px solid transparent",
+                  ? "1px solid white"
+                  : "1px solid transparent",
               background: "none",
               padding: "5px",
               cursor: "pointer",
             }}
           >
-            <FaSquare size={20} color="var(--white)" />
+            <FaSquare size={15} color="var(--white)" />
           </button>
           <button
             onClick={() => onToolSelect("circle")}
             style={{
               border:
                 drawingTool === "circle"
-                  ? "3px solid white"
-                  : "2px solid transparent",
+                  ? "1px solid white"
+                  : "1px solid transparent",
               background: "none",
               padding: "5px",
               cursor: "pointer",
             }}
           >
-            <FaCircle size={20} color="var(--white)" />
+            <FaCircle size={15} color="var(--white)" />
           </button>
           <button
             onClick={() => onToolSelect("fill")}
             style={{
               border:
                 drawingTool === "fill"
-                  ? "3px solid white"
-                  : "2px solid transparent",
+                  ? "1px solid white"
+                  : "1px solid transparent",
               background: "none",
               padding: "5px",
               cursor: "pointer",
             }}
           >
-            <FaFillDrip size={20} color="var(--white)" />
+            <FaFillDrip size={15} color="var(--white)" />
           </button>
         </div>
       )}
@@ -187,11 +184,11 @@ const TilePalette = ({
             cursor: "pointer",
             border:
               selectedTile === null
-                ? "3px solid white"
-                : "2px solid transparent",
+                ? "1px solid white"
+                : "1px solid transparent",
           }}
         >
-          <FaEraser size={20} color="var(--white)" />
+          <FaEraser size={15} color="var(--white)" />
         </button>
       )}
     </div>

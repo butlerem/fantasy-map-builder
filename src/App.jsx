@@ -18,6 +18,7 @@ function App() {
     <div className="game-screen">
       <h1 className="game-title">Map Builder</h1>
       <div className="main-content">
+        {/* Canvas section */}
         <div className="canvas-container">
           <MapCanvas
             activeLayer={activeLayer}
@@ -25,6 +26,10 @@ function App() {
             drawingTool={drawingTool}
           />
         </div>
+      </div>
+
+      {/* Palette and Toolbar Wrapper */}
+      <div className="menu-wrapper">
         <div className="tile-palette-container">
           <TilePaletteMenu
             activeLayer={activeLayer}
@@ -35,9 +40,9 @@ function App() {
             drawingTool={drawingTool}
           />
         </div>
-      </div>
-      <div className="toolbar-container">
-        <Toolbar />
+        <div className="toolbar-container">
+          <Toolbar />
+        </div>
       </div>
     </div>
   );
