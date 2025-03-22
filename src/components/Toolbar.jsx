@@ -64,7 +64,7 @@ const Toolbar = () => {
 
       <button onClick={() => handleLoadSample("sample1")}>
         <FaArrowDown size={12} color="var(--white)" style={iconStyle} />
-        <span className="button-text">Sample Map</span>
+        <span className="button-text">Sample</span>
       </button>
     </div>
   );
