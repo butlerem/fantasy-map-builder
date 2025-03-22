@@ -201,6 +201,14 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+
+    // Disable all smoothing
+    ctx.imageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.oImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw base layer.

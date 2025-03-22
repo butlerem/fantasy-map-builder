@@ -52,14 +52,18 @@ const TilePalette = ({
           else if (layer === "events") {
             const eventSprite = getFrameForEvent(tile, 1);
             if (eventSprite) {
-              tileWidth = eventSprite.sWidth;
-              tileHeight = eventSprite.sHeight;
+              // Force the palette preview to 40×40
+              tileWidth = TILE_SIZE;
+              tileHeight = TILE_SIZE;
               spriteStyle = {
                 width: tileWidth,
                 height: tileHeight,
                 backgroundImage: `url(${eventSprite.image.src})`,
+                // The offset for the portion of the sprite we want:
                 backgroundPosition: `-${eventSprite.sx}px -${eventSprite.sy}px`,
+                // This ensures we only see the needed portion from the spritesheet
                 backgroundSize: `${eventSprite.image.width}px ${eventSprite.image.height}px`,
+                backgroundRepeat: "no-repeat",
               };
             }
           }

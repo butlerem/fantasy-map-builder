@@ -1,12 +1,14 @@
-import "./index.css";
+// App.js
 import React, { useState } from "react";
 import MapCanvas from "./components/MapCanvas";
 import TilePaletteMenu from "./components/TilePaletteMenu";
 import Toolbar from "./components/Toolbar";
+import WelcomeOverlay from "./components/WelcomeOverlay"; // adjust path
 
 function App() {
   const [activeLayer, setActiveLayer] = useState("base");
   const [drawingTool, setDrawingTool] = useState("pencil");
+  const [showWelcome, setShowWelcome] = useState(true);
 
   const [selectedTiles, setSelectedTiles] = useState({
     base: "grass",
@@ -14,11 +16,14 @@ function App() {
     events: "boy",
   });
 
+  const handleDismissWelcome = () => setShowWelcome(false);
+
   return (
     <div className="game-screen">
+      {showWelcome && <WelcomeOverlay onDismiss={handleDismissWelcome} />}
+
       <h1 className="game-title">Map Builder</h1>
       <div className="main-content">
-        {/* Canvas section */}
         <div className="canvas-container">
           <MapCanvas
             activeLayer={activeLayer}
@@ -27,8 +32,6 @@ function App() {
           />
         </div>
       </div>
-
-      {/* Palette and Toolbar Wrapper */}
       <div className="menu-wrapper">
         <div className="tile-palette-container">
           <TilePaletteMenu
