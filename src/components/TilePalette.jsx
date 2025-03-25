@@ -1,5 +1,5 @@
 import React from "react";
-import tileImages from "../assets/tileImages";
+import { tileImages } from "../assets/tileImages";
 import getFrameForEvent from "../assets/eventSprites";
 import {
   FaPencilAlt,
@@ -11,6 +11,9 @@ import {
 
 const TILE_SIZE = 40;
 
+/**
+ * TilePalette component displays available tiles and drawing tools for the map editor
+ */
 const TilePalette = ({
   tiles,
   selectedTile,
@@ -44,24 +47,17 @@ const TilePalette = ({
           let imgSrc = null;
           let spriteStyle = {};
 
-          // Base layer: use images from tileImages.
+          // Handle different layer types
           if (layer === "base") {
             imgSrc = tileImages[tile];
-          }
-          // Events layer: use getFrameForEvent.
-          else if (layer === "events") {
+          } else if (layer === "events") {
             const eventSprite = getFrameForEvent(tile, 1);
             if (eventSprite) {
-              // Force the palette preview to 40×40
-              tileWidth = TILE_SIZE;
-              tileHeight = TILE_SIZE;
               spriteStyle = {
                 width: tileWidth,
                 height: tileHeight,
                 backgroundImage: `url(${eventSprite.image.src})`,
-                // The offset for the portion of the sprite we want:
                 backgroundPosition: `-${eventSprite.sx}px -${eventSprite.sy}px`,
-                // This ensures we only see the needed portion from the spritesheet
                 backgroundSize: `${eventSprite.image.width}px ${eventSprite.image.height}px`,
                 backgroundRepeat: "no-repeat",
               };
@@ -108,6 +104,7 @@ const TilePalette = ({
         })}
       </div>
 
+      {/* Drawing tools for base layer */}
       {layer === "base" && (
         <div
           className="shapes"
@@ -176,6 +173,7 @@ const TilePalette = ({
         </div>
       )}
 
+      {/* Eraser tool for non-base layers */}
       {layer !== "base" && (
         <button
           className="eraser"

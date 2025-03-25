@@ -1,16 +1,20 @@
 import React, { useState, useRef } from "react";
 import outdoorTileset from "../assets/maps/outdoor.png";
 
-const TILE_SIZE_TILES = 32; // size of each tile in the tileset
+const TILE_SIZE_TILES = 32;
 
+/**
+ * TilesetSelector component allows selecting regions from the outdoor tileset
+ */
 const TilesetSelector = ({ onSelect, selectedTile }) => {
-  // Store selection in terms of tile coordinates
   const [isSelecting, setIsSelecting] = useState(false);
   const [startTile, setStartTile] = useState(null);
   const [currentTile, setCurrentTile] = useState(null);
   const containerRef = useRef(null);
 
-  // Convert mouse event into tile coordinates (integer values)
+  /**
+   * Converts mouse coordinates to tile coordinates
+   */
   const getTileCoords = (e) => {
     const rect = containerRef.current.getBoundingClientRect();
     const tileX = Math.floor((e.clientX - rect.left) / TILE_SIZE_TILES);
@@ -35,18 +39,23 @@ const TilesetSelector = ({ onSelect, selectedTile }) => {
     if (!isSelecting) return;
     setIsSelecting(false);
     if (!startTile || !currentTile) return;
+
+    // Calculate selection bounds
     const tileX1 = Math.min(startTile.tileX, currentTile.tileX);
     const tileY1 = Math.min(startTile.tileY, currentTile.tileY);
     const tileX2 = Math.max(startTile.tileX, currentTile.tileX);
     const tileY2 = Math.max(startTile.tileY, currentTile.tileY);
+
+    // Convert to pixel coordinates
     const sx = tileX1 * TILE_SIZE_TILES;
     const sy = tileY1 * TILE_SIZE_TILES;
     const sw = (tileX2 - tileX1 + 1) * TILE_SIZE_TILES;
     const sh = (tileY2 - tileY1 + 1) * TILE_SIZE_TILES;
+
     onSelect({ sx, sy, sw, sh });
   };
 
-  // Compute the preview rectangle in pixel coordinates from the tile coordinates.
+  // Calculate preview rectangle
   let preview = null;
   if (startTile && currentTile) {
     const tileX1 = Math.min(startTile.tileX, currentTile.tileX);
@@ -81,12 +90,12 @@ const TilesetSelector = ({ onSelect, selectedTile }) => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.3) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.3) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.46) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.46) 1px, transparent 1px)`,
           backgroundSize: `${TILE_SIZE_TILES}px ${TILE_SIZE_TILES}px`,
           pointerEvents: "none",
         }}
       />
-      {/* Preview highlight */}
+      {/* Selection preview */}
       {isSelecting && preview && (
         <div
           style={{
@@ -100,7 +109,7 @@ const TilesetSelector = ({ onSelect, selectedTile }) => {
           }}
         />
       )}
-      {/* Highlight the selected region once chosen */}
+      {/* Selected region highlight */}
       {selectedTile && (
         <div
           style={{

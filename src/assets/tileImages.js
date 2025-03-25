@@ -4,6 +4,7 @@ import grass3Src from "./tiles/grass3.png";
 import waterSrc from "./tiles/water.png";
 import water2Src from "./tiles/water2.png";
 import water3Src from "./tiles/water3.png";
+import water4Src from "./tiles/water4.png";
 import roadSrc from "./tiles/road.png";
 import road2Src from "./tiles/road2.png";
 import tile from "./tiles/tile.png";
@@ -17,6 +18,7 @@ import threeSrc from "./tiles/3.png";
 import fourSrc from "./tiles/4.png";
 import fiveSrc from "./tiles/5.png";
 import sandSrc from "./tiles/sand.png";
+import sand2Src from "./tiles/sand2.png";
 import stairsSrc from "./tiles/stairs.png";
 import stone2Src from "./tiles/stone2.png";
 import tile2Src from "./tiles/tile2.png";
@@ -31,13 +33,14 @@ export const createImage = (src) => {
 
 // Create and export an object that maps tile names to Image objects.
 // This allows us to access images by name in our canvas drawing logic.
-const tileImages = {
+export const tileImages = {
   one: createImage(oneSrc),
   two: createImage(twoSrc),
   three: createImage(threeSrc),
   four: createImage(fourSrc),
   five: createImage(fiveSrc),
   sand: createImage(sandSrc),
+  sand2: createImage(sand2Src),
   stairs: createImage(stairsSrc),
   stone2: createImage(stone2Src),
   tile2: createImage(tile2Src),
@@ -47,6 +50,7 @@ const tileImages = {
   water: createImage(waterSrc),
   water2: createImage(water2Src),
   water3: createImage(water3Src),
+  water4: createImage(water4Src),
   road: createImage(roadSrc),
   road2: createImage(road2Src),
   tile: createImage(tile),
@@ -55,5 +59,3 @@ const tileImages = {
   brick3: createImage(brick3),
   brick4: createImage(brick4),
 };
-
-export default tileImages;
