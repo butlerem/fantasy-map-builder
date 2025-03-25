@@ -14,36 +14,31 @@ function App() {
       Array.from({ length: GRID_WIDTH }, () => DEFAULT_TILE)
     )
   );
-  const [selectedTile, setSelectedTile] = useState("water"); // starting selection
-
-  // Use a ref to store the preloaded images
+  const [selectedTile, setSelectedTile] = useState("water");
+  const [isDrawing, setIsDrawing] = useState(false);
   const tileImages = useRef({});
 
   useEffect(() => {
-    // Preload your images once
+    // Preload images
     const grassImg = new Image();
     grassImg.src = grassSrc;
     const waterImg = new Image();
     waterImg.src = waterSrc;
 
-    // Store them in the ref for later use
     tileImages.current = {
       grass: grassImg,
       water: waterImg,
     };
 
-    // When both images have loaded, draw the grid
-    // (for simplicity, we assume both load quickly)
+    // Draw grid once images are loaded
     grassImg.onload = waterImg.onload = () => {
       drawGrid();
     };
   }, []);
 
-  // Function to draw the grid on the canvas
   const drawGrid = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    // Clear the canvas before redrawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let y = 0; y < GRID_HEIGHT; y++) {
@@ -51,7 +46,6 @@ function App() {
         const tileType = grid[y][x];
         const img = tileImages.current[tileType];
         if (img) {
-          // Draw the image instead of a colored rectangle
           ctx.drawImage(
             img,
             x * TILE_SIZE,
@@ -60,7 +54,6 @@ function App() {
             TILE_SIZE
           );
         } else {
-          // Fallback in case an image isn't available
           ctx.fillStyle = "#fff";
           ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
@@ -69,13 +62,8 @@ function App() {
     }
   };
 
-  // Redraw the grid every time the grid state updates
-  useEffect(() => {
-    drawGrid();
-  }, [grid]);
-
-  // Handle clicks on the canvas to update a tile in the grid
-  const handleCanvasClick = (e) => {
+  // Update tile based on mouse event coordinates
+  const updateTile = (e) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
@@ -88,13 +76,41 @@ function App() {
     });
   };
 
+  // Start drawing on mouse down
+  const handleMouseDown = (e) => {
+    setIsDrawing(true);
+    updateTile(e);
+  };
+
+  // If drawing is active, update the tile as the mouse moves
+  const handleMouseMove = (e) => {
+    if (!isDrawing) return;
+    updateTile(e);
+  };
+
+  // Stop drawing when mouse is released or leaves the canvas
+  const handleMouseUp = () => {
+    setIsDrawing(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDrawing(false);
+  };
+
+  useEffect(() => {
+    drawGrid();
+  }, [grid]);
+
   return (
     <div style={{ display: "flex" }}>
       <canvas
         ref={canvasRef}
         width={GRID_WIDTH * TILE_SIZE}
         height={GRID_HEIGHT * TILE_SIZE}
-        onClick={handleCanvasClick}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
         style={{ border: "1px solid #000" }}
       />
       <div style={{ marginLeft: 20 }}>
