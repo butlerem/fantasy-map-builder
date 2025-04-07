@@ -67,7 +67,7 @@ maps, and Load a Sample Map.`;
               words={[textStep1]}
               loop={1} // Type only once
               cursor
-              typeSpeed={20}
+              typeSpeed={25}
               deleteSpeed={0}
               delaySpeed={1000}
             />
@@ -77,7 +77,7 @@ maps, and Load a Sample Map.`;
               words={[textStep2]}
               loop={1}
               cursor
-              typeSpeed={20}
+              typeSpeed={25}
               deleteSpeed={0}
               delaySpeed={1000}
             />

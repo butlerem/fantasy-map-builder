@@ -29,9 +29,11 @@ export const EVENT_DEFAULT_NAMES = {
   boy4: "Warrior Boy",
   girl3: "Noble Girl",
   girl4: "Warrior Girl",
-  animal1: "Cow",
+  animal1: "Pig",
   animal2: "Fox",
   animal3: "Mountain Goat",
+  monster1: "Slime",
+  monster2: "Plant",
 };
 
 // Map each event type to a block index
@@ -49,6 +51,9 @@ const eventMapping = {
   animal1: { sheet: "npc", index: 8 },
   animal2: { sheet: "npc", index: 9 },
   animal3: { sheet: "npc", index: 11 },
+
+  monster1: { sheet: "npc", index: 14 },
+  monster2: { sheet: "npc", index: 12 },
 };
 
 /// This function accepts a frame index, for a walking cycle, 3 frames (0, 1, 2).
