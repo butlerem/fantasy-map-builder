@@ -1,0 +1,56 @@
+.tilePaletteMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 1vmin;
+}
+
+.layerButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vmin;
+}
+
+.layerButton {
+  background: var(--burgundy);
+  color: var(--white);
+  font-size: 1.4vmin;
+  padding: 0.6vmin 1.2vmin;
+  border: none;
+  border-radius: var(--radius);
+  clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: center;
+}
+
+.layerButton:hover {
+  background: #7a3746;
+}
+
+.layerButton.active {
+  background: var(--light-brown);
+  color: var(--burgundy);
+  font-weight: bold;
+  border: 0.2vmin solid var(--border-color);
+}
+
+.eraserButton {
+  background: var(--burgundy);
+  border: none;
+  padding: 0.5vmin;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.eraserButton:hover {
+  background: #7a3746;
+}
+
+.eraserButton.active {
+  border: 0.2vmin solid var(--white);
+}

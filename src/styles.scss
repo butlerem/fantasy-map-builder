@@ -10,14 +10,17 @@
 :root {
   font-family: "VT323", monospace;
   color: #f8fafc;
-  --bg-color: #231e1c;
+  --bg-color: #d1ae98;
   --white: #f8fafc;
-  --shadow-color: rgba(0, 0, 0, 0.5);
-  --button-bg: #231d1c;
-  --button-hover-bg: #2c2522;
-  --button-active-bg: #2b2523;
-  --radius: 1vmin;
-  --padding: 2vmin;
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --burgundy: #662a3a;
+  --light-brown: #feedd5;
+  --lighter-brown: #fff5e6;
+  --button-bg: #d1ae98;
+  --title-color: #f4e1cb;
+  --border-color: #d1ae98;
+  --radius: 0.5vmin;
+  --padding: 1vmin;
   --bar: hsla(0, 0%, 100%, 0.5);
 }
 
@@ -25,7 +28,7 @@
 /*                               Global Styles                               */
 /* ------------------------------------------------------------------------- */
 body {
-  background-color: var(--bg-color);
+  background-color: #8f5b4c;
   color: var(--white);
   margin: 0;
   padding: 0;
@@ -36,92 +39,94 @@ body {
   font-weight: 300;
 }
 
-button,
-.toolbar button {
-  font-family: inherit;
-  background: var(--button-bg);
-  border: 0.3vmin solid var(--white);
-  color: var(--white);
-  cursor: pointer;
-  font-size: 1.4vmin;
-  font-weight: 300;
-}
-
-button {
-  padding: 0.6vmin 1.2vmin;
-  border-radius: 0.6vmin;
-}
-
-.toolbar button {
-  padding: 0.4vmin 0.4vmin;
-  border-radius: 0.5vmin;
-  text-align: center;
-}
-
-button:hover {
-  transform: translateY(-0.2vmin);
-  box-shadow: 0 0.4vmin 0.8vmin var(--shadow-color);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.toolbar button:hover {
-  background: var(--button-hover-bg);
-}
-
-button.active {
-  background: var(--button-active-bg);
-}
-
 /* ------------------------------------------------------------------------- */
 /*                              App/Game Screen                              */
 /* ------------------------------------------------------------------------- */
 .game-screen {
   position: relative;
-  width: 95vmin;
+  width: 120vmin;
   height: 90vmin;
   max-width: 100%;
   max-height: 100%;
   overflow: hidden;
   background: var(--bg-color);
-  border: 1px solid var(--white);
+  border: 0.3vmin solid var(--border-color);
   border-radius: var(--radius);
-  box-shadow: 0 5px 15px var(--shadow-color);
+  box-shadow: inset 0 0 2vmin rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  padding: 15px;
-  gap: 10px;
+  padding: 1vmin;
+  gap: 1vmin;
 }
 
 .game-title {
   text-transform: uppercase;
-  font-size: 3vmin;
+  font-size: 2.5vmin;
   text-align: center;
-  margin-bottom: 0.8vmin;
+  margin: 0;
+  padding: 0;
+  color: var(--title-color);
 }
 
-.main-content {
-  flex: 1;
+.navbar {
   display: flex;
-  gap: 12px;
-  overflow: hidden;
-  height: 100%;
-  min-height: 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8vmin 1.2vmin;
+  background: var(--burgundy);
+  border-radius: var(--radius);
+  height: 5vmin;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.8vmin;
+  align-items: center;
+}
+
+.toolbar button {
+  padding: 0.4vmin 0.8vmin;
+  font-size: 1.2vmin;
+  display: flex;
+  align-items: center;
+  gap: 0.4vmin;
+  background: var(--button-bg);
+  border: none;
+  color: var(--burgundy);
 }
 
 .canvas-container {
-  flex: 4;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  margin-left: 26vmin;
+  background: #ebcfc9;
+  padding: 1vmin;
+  border-radius: var(--radius);
+  border: 0.2vmin solid #ebcfc9;
+  box-shadow: inset 0 0 1vmin rgba(0, 0, 0, 0.05);
+}
+
+.canvas-wrapper {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   min-width: 0;
   min-height: 0;
-  height: 100%;
+  position: relative;
 }
 
 canvas {
   width: auto;
-  height: auto;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
@@ -132,24 +137,68 @@ canvas {
 /*                           Menu & Toolbar Styles                           */
 /* ------------------------------------------------------------------------- */
 .menu-wrapper {
+  position: absolute;
+  left: 2vmin;
+  top: 9vmin;
+  bottom: 2vmin;
+  width: 22vmin;
   display: flex;
-  justify-content: space-between;
-  align-items: stretch;
+  flex-direction: column;
   gap: 0.8vmin;
-  padding: 0.4vmin;
-  max-height: 30%;
+  background: var(--light-brown);
+  padding: 1vmin;
+  border-radius: var(--radius);
+  border: 0.2vmin solid var(--border-color);
+  box-shadow: inset 0 0 1vmin rgba(0, 0, 0, 0.05);
 }
 
 .tile-palette-container {
-  flex: 4;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--button-active-bg);
+  background: var(--light-brown);
+  padding: 1.2vmin;
+  border-radius: var(--radius);
+  border: 0.2vmin solid var(--border-color);
+  box-shadow: inset 0 0 1vmin rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+}
+
+.layer-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vmin;
+  width: 100%;
+  margin-bottom: 1vmin;
+}
+
+.layer-buttons button {
+  width: 100%;
   padding: 0.8vmin;
-  border: 0.3vmin solid var(--white);
-  border-radius: 0.8vmin;
-  box-shadow: 0 0.5vmin 1vmin var(--shadow-color);
+  background: var(--burgundy);
+  border: 0.2vmin solid var(--border-color);
+  color: var(--white);
+  border-radius: var(--radius);
+  font-size: 1.2vmin;
+  text-align: left;
+  position: relative;
+}
+
+.layer-buttons button::before {
+  content: "";
+  display: inline-block;
+  width: 1.2vmin;
+  height: 1.2vmin;
+  margin-right: 0.8vmin;
+  background: var(--button-bg);
+  border: 0.1vmin solid var(--border-color);
+  border-radius: 0.2vmin;
+  vertical-align: middle;
+}
+
+.layer-buttons button.active::before {
+  background: var(--white);
 }
 
 .tile-palette,
@@ -163,48 +212,33 @@ canvas {
 }
 
 .object-layer {
-  max-height: 17vmin;
-  overflow-y: auto;
+  max-height: none;
+  overflow-y: visible;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vmin;
 }
 
 .tile-palette .toolbox {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4vmin;
-  max-height: 15vmin;
-  overflow-y: auto;
-}
-
-.toolbar {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1vmin;
-  width: 12vmin;
-  min-width: 8vmin;
-}
-
-.layer-buttons {
-  display: flex;
-  gap: 0.4vmin;
-  margin-bottom: 0.8vmin;
-}
-
-.layer-buttons button {
-  padding: 0.4vmin 0.6vmin;
-  font-size: 1.2vmin;
+  max-height: none;
+  overflow-y: visible;
 }
 
 /* ------------------------------------------------------------------------- */
 /*                              Tooltip Styles                               */
 /* ------------------------------------------------------------------------- */
 .event-tooltip {
-  padding: 1.8vmin;
-  background: var(--button-active-bg);
-  border: 0.3vmin solid var(--white);
+  padding: 1.5vmin;
+  background: var(--light-brown);
+  border: 0.2vmin solid var(--border-color);
   border-radius: var(--radius);
-  box-shadow: 0 0.4vmin 1vmin var(--shadow-color);
-  color: var(--white);
+  box-shadow: 0 0.2vmin 1vmin rgba(0, 0, 0, 0.1),
+    inset 0 0 1vmin rgba(0, 0, 0, 0.05);
+  color: var(--burgundy);
   pointer-events: auto;
   position: absolute;
 }
@@ -212,19 +246,22 @@ canvas {
 .event-tooltip .tooltip-input {
   margin-bottom: 0.4vmin;
   background: transparent;
-  border: 0.3vmin solid var(--white);
-  color: var(--white);
+  border: 0.2vmin solid var(--border-color);
+  color: var(--burgundy);
   padding: 0.2vmin 0.4vmin;
-  border-radius: 0.4vmin;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 1.2vmin;
 }
 
 .event-tooltip .role-cycler button {
-  background: var(--button-bg);
-  border: 0.3vmin solid var(--white);
+  background: var(--burgundy);
+  border: 0.2vmin solid var(--border-color);
   color: var(--white);
   cursor: pointer;
   padding: 0.2vmin 0.6vmin;
-  border-radius: 0.4vmin;
+  border-radius: var(--radius);
+  font-size: 1.2vmin;
 }
 
 .tooltip-pin {
@@ -233,9 +270,9 @@ canvas {
   right: 0.4vmin;
   background: transparent;
   border: none;
-  color: var(--white);
+  color: var(--burgundy);
   cursor: pointer;
-  font-size: 1.4vmin;
+  font-size: 1.2vmin;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -245,79 +282,13 @@ canvas {
   border-radius: 0.4vmin;
   overflow: hidden;
   margin: 0.2vmin;
+  border: 0.2vmin solid var(--border-color);
+  background: var(--button-bg);
 }
 
 .icon:hover {
   transform: scale(1.05);
   transition: transform 0.15s ease;
-}
-
-.character-list {
-  flex: 1;
-  min-width: 8vmin;
-  background: var(--button-bg);
-  border: 0.3vmin solid var(--white);
-  border-radius: var(--radius);
-  padding: 0.4vmin 0.8vmin 0.4vmin 0.4vmin;
-  margin-right: 1.5vmin;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2vmin;
-  overflow: hidden;
-}
-
-.character-list h3 {
-  margin: 0;
-  padding: 0.2vmin;
-  text-transform: uppercase;
-  font-size: 1.2vmin;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.character-list-items {
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4vmin;
-  padding: 0.2vmin;
-  padding-bottom: 0.4vmin;
-}
-
-.character-sprite-wrapper {
-  position: relative;
-  width: 4.8vmin;
-  height: 4.8vmin;
-}
-
-.character-list-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.2vmin;
-  padding: 0.4vmin 0.2vmin;
-  border: 0.3vmin solid transparent;
-  border-radius: 0.3vmin;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.character-list-item:hover {
-  background: var(--button-hover-bg);
-  border-color: var(--white);
-}
-
-.character-entry {
-  display: flex;
-  align-items: center;
-  gap: 0.6vmin;
-}
-
-.character-sprite {
-  flex-shrink: 0;
-  width: 4.8vmin;
-  height: 4.8vmin;
-  border-radius: 0.4vmin;
 }
 
 .role-icon-box {
@@ -330,29 +301,7 @@ canvas {
   justify-content: center;
   background: #fff;
   border-radius: 4vmin;
-  border: 0.2vmin solid #ccc;
-}
-
-.character-info {
-  display: flex;
-  flex-direction: column;
-  font-size: 1.2vmin;
-  line-height: 1.1;
-}
-
-.character-name {
-  font-size: 1.6vmin;
-  font-weight: bold;
-  color: var(--white);
-  margin: 0;
-}
-
-.character-role {
-  font-size: 1.4vmin;
-  font-style: italic;
-  color: #ccc;
-  text-transform: capitalize;
-  margin: 0;
+  border: 0.2vmin solid var(--border-color);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -371,6 +320,7 @@ canvas {
   pointer-events: auto;
   opacity: 1;
   transition: opacity 0.3s ease;
+  z-index: 9999;
 }
 
 .tutorial-overlay.fade-out {
@@ -441,31 +391,38 @@ canvas {
 /* ------------------------------------------------------------------------- */
 @media (max-width: 800px) {
   .game-screen {
-    width: 85vmin;
+    width: 110vmin;
     height: 115vmin;
     padding: 10px;
     gap: 2px;
   }
 
   .main-content {
-    flex-direction: column;
-    gap: 0;
+    margin-left: 0;
   }
 
-  .character-list {
-    order: -1; /* Move above canvas */
+  .menu-wrapper {
+    position: relative;
+    left: 0;
+    top: 0;
     width: 100%;
-    margin-right: 0;
-    height: 80px;
-    flex: 0 0 80px;
-    padding: 0.2vmin;
-    box-sizing: border-box;
+    height: auto;
+    flex-direction: row;
   }
 
-  .character-list-items {
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
+  .tile-palette-container {
+    flex: 1;
+    max-height: 30%;
+  }
+
+  .navbar {
+    flex-direction: column;
+    gap: 0.8vmin;
+  }
+
+  .toolbar {
+    width: 100%;
+    justify-content: center;
   }
 
   .canvas-container {
@@ -476,10 +433,6 @@ canvas {
   canvas {
     max-width: 100%;
     max-height: 100%;
-  }
-
-  .toolbar {
-    flex: 0;
   }
 
   .toolbox .icon {
@@ -500,4 +453,148 @@ canvas {
     align-items: center;
     justify-content: center;
   }
+}
+
+/* ------------------------------------------------------------------------- */
+/*                              Party Menu Styles                              */
+/* ------------------------------------------------------------------------- */
+.party-menu {
+  position: absolute;
+  bottom: 1vmin;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--light-brown);
+  padding: 2vmin;
+  border-radius: var(--radius);
+  border: 0.2vmin solid var(--border-color);
+  box-shadow: inset 0 0 1vmin rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 1vmin;
+  position: relative;
+}
+
+.party-menu::before {
+  content: "Party Menu";
+  position: absolute;
+  top: -2vmin;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--burgundy);
+  color: var(--white);
+  padding: 0.5vmin 2vmin;
+  border-radius: var(--radius);
+  font-size: 1.4vmin;
+  white-space: nowrap;
+}
+
+.party-menu button {
+  width: 5vmin;
+  height: 5vmin;
+  padding: 1vmin;
+  background: var(--light-brown);
+  border: 0.2vmin solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+}
+
+.party-menu button svg {
+  width: 100%;
+  height: 100%;
+  color: var(--burgundy);
+}
+
+.party-menu button:first-child {
+  border: 0.2vmin solid var(--burgundy);
+  background: var(--light-brown);
+}
+
+/* Add decorative corners to party menu */
+.party-menu::after {
+  content: "";
+  position: absolute;
+  top: -0.8vmin;
+  left: -0.8vmin;
+  right: -0.8vmin;
+  bottom: -0.8vmin;
+  border: 0.2vmin solid var(--border-color);
+  border-radius: calc(var(--radius) + 0.8vmin);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Corner decorations */
+.party-menu .corner {
+  position: absolute;
+  width: 1.5vmin;
+  height: 1.5vmin;
+  border: 0.2vmin solid var(--border-color);
+}
+
+.party-menu .corner-tl {
+  top: -0.8vmin;
+  left: -0.8vmin;
+  border-right: none;
+  border-bottom: none;
+}
+
+.party-menu .corner-tr {
+  top: -0.8vmin;
+  right: -0.8vmin;
+  border-left: none;
+  border-bottom: none;
+}
+
+.party-menu .corner-bl {
+  bottom: -0.8vmin;
+  left: -0.8vmin;
+  border-right: none;
+  border-top: none;
+}
+
+.party-menu .corner-br {
+  bottom: -0.8vmin;
+  right: -0.8vmin;
+  border-left: none;
+  border-top: none;
+}
+
+/* ------------------------------------------------------------------------- */
+/*                              Global Styles                               */
+/* ------------------------------------------------------------------------- */
+.shapes button svg,
+.toolbox button svg,
+.toolbar button svg,
+.navbar button svg {
+  color: var(--burgundy);
+}
+
+/* Make navbar icons match navbar color */
+.navbar svg,
+.navbar button svg {
+  color: var(--white);
+}
+
+/* Drawing tool icons in burgundy */
+.shapes button svg,
+.toolbox button svg {
+  color: var(--burgundy);
+}
+
+/* Event icons background */
+.tile-palette .icon[data-type="event"] {
+  background: var(--button-bg);
+}
+
+/* Base layer and event layer tiles */
+.tile-palette .icon {
+  border: 0.2vmin solid var(--border-color);
+  background: var(--button-bg);
+}
+
+/* Override for active icons */
+.icon.active,
+.icon:hover {
+  border-color: var(--burgundy);
 }

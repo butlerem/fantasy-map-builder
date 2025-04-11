@@ -1,0 +1,29 @@
+.toolbar {
+  display: flex;
+  gap: 0.8vmin;
+  align-items: center;
+}
+
+.toolbarButton {
+  background: var(--burgundy);
+  color: var(--white);
+  font-size: 1.4vmin;
+  padding: 0.6vmin 1.2vmin;
+  border: none;
+  border-radius: var(--radius);
+  clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6vmin;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toolbarButton:hover {
+  background: #7a3746;
+}
+
+.buttonText {
+  font-size: 1.2vmin;
+}
