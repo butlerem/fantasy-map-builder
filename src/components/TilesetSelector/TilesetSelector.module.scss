@@ -1,0 +1,60 @@
+.tilesetContainer {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  background-color: var(--light-brown);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 20vmin;
+  height: 40vmin;
+  overflow: auto;
+}
+
+.tilesetImage {
+  display: block;
+  width: auto;
+  height: auto;
+  cursor: crosshair;
+  margin: 0;
+  padding: 0;
+}
+
+.gridOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.46) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.46) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.selectionPreview {
+  position: absolute;
+  border: 2px dashed cyan;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.selectedRegion {
+  position: absolute;
+  border: 2px solid magenta;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.selectionInfo {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  text-align: center;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--light-brown);
+  padding: 0.5rem;
+  border-radius: 4px;
+} 
