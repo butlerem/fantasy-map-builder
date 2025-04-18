@@ -45,7 +45,15 @@ const TilePaletteMenu = ({
       {/* Layer-specific palettes */}
       {activeLayer === "base" && (
         <TilePalette
-          tiles={["water", "grass", "sand", "road", "stone"]}
+          tiles={[
+            "water", "water2", "water4",
+            "grass", "grass2", "grass3",
+            "road", "road2",
+            "sand", "sand2",
+            "stone2", "tile2",
+            "brick", "brick4",
+            "stairs"
+          ]}
           selectedTile={selectedTiles.base}
           onSelect={(tile) =>
             setSelectedTiles((prev) => ({ ...prev, base: tile }))

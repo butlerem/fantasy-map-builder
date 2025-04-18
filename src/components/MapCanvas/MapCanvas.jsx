@@ -18,6 +18,8 @@ import { useCanvasInteractions } from "../../hooks/useCanvasInteractions";
 import { useMouseHandlers } from "../../hooks/useMouseHandlers";
 import { drawAutotile } from "../../utils/drawAutotile";
 import { autotileBlocks } from "../../utils/autotileConfig";
+import { drawBaseLayer } from "../../utils/drawing/drawBaseLayer";
+import { tileImages } from "../../assets/tileImages";
 
 // Constants
 const GRID_WIDTH = 28;
@@ -197,8 +199,16 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawBaseLayerAutotiles(ctx, gridBase, imageMap);
+    // Draw base terrain layer
+    drawBaseLayer({
+      ctx,
+      gridBase,
+      tileImages,
+      tileSize: TILE_SIZE,
+      onImageLoad: drawGrid,
+    });
 
+    // Draw object overlay layer
     drawOverlayLayer({
       ctx,
       gridOverlay,
@@ -207,6 +217,7 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
       onImageLoad: drawGrid,
     });
 
+    // Draw animated events layer
     drawEvents({
       ctx,
       animatedEvents,
@@ -310,11 +321,13 @@ const MapCanvas = ({ activeLayer, selectedTile, drawingTool }) => {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={(e) => {
+        onMouseLeave={() => {
           if (!pinnedTooltip) {
             setHoveredEvent(null);
           }
-          handleMouseUp(e);
+          if (startPos) {
+            canvasMouseUp();
+          }
         }}
       />
       {(hoveredEvent || pinnedTooltip) && (

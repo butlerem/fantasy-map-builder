@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  getTileCoords,
-  TILE_SIZE as AUTOTILE_SIZE,
-  TILESET_IMAGE_ELEMENT,
-  BASE_TILE_SECTIONS,
-} from "../../assets/tileImages";
+import { tileImages } from "../../assets/tileImages";
 
 import getFrameForEvent from "../../assets/eventSprites";
 import {
@@ -51,19 +46,16 @@ const TilePalette = ({
           let spriteStyle = {};
 
           if (layer === "base") {
-            const tileIndex = BASE_TILE_SECTIONS[tile];
-            // Use the plain tile index for preview
-            const previewIndex = tileIndex + PLAIN_TILE_INDEX;
-            const { x: sx, y: sy } = getTileCoords(previewIndex);
-            spriteStyle = {
-              width: TILE_SIZE,
-              height: TILE_SIZE,
-              backgroundImage: `url(${TILESET_IMAGE_ELEMENT.src})`,
-              backgroundPosition: `-${sx}px -${sy}px`,
-              backgroundSize: "auto",
-              backgroundRepeat: "no-repeat",
-              imageRendering: "pixelated",
-            };
+            const image = tileImages[tile];
+            if (image) {
+              spriteStyle = {
+                width: TILE_SIZE,
+                height: TILE_SIZE,
+                backgroundImage: `url(${image.src})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+              };
+            }
           } else if (layer === "events") {
             const eventSprite = getFrameForEvent(tile, 1);
             if (eventSprite) {
@@ -86,16 +78,17 @@ const TilePalette = ({
               style={{
                 width: TILE_SIZE,
                 height: TILE_SIZE,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
                 border:
                   selectedTile === tile
                     ? "2px solid white"
                     : "1px solid transparent",
                 cursor: "pointer",
-                background: "#eee",
-                overflow: "hidden",
+                backgroundColor: "#eee",
+                backgroundImage: spriteStyle.backgroundImage,
+                backgroundPosition: spriteStyle.backgroundPosition,
+                backgroundSize: spriteStyle.backgroundSize,
+                backgroundRepeat: spriteStyle.backgroundRepeat,
+                imageRendering: spriteStyle.imageRendering,
                 borderRadius: "4px",
                 margin: "1px",
               }}
