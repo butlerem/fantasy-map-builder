@@ -24,7 +24,7 @@ export function useCanvasInteractions(canvasRef, tileSize = 40) {
     }
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e) => {
     // Return the final position or simply reset.
     setStartPos(null);
     setCurrentPos(null);

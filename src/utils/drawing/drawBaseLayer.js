@@ -5,9 +5,19 @@ export function drawBaseLayer({
   tileSize,
   onImageLoad,
 }) {
+  if (!ctx || !gridBase || !tileImages || !tileSize) {
+    console.error('Missing required parameters for drawBaseLayer');
+    return;
+  }
+
   for (let y = 0; y < gridBase.length; y++) {
     for (let x = 0; x < gridBase[y].length; x++) {
-      const tileType = gridBase[y][x];
+      const tileData = gridBase[y][x];
+      if (!tileData) continue;
+      
+      const tileType = typeof tileData === 'string' ? tileData : tileData.type;
+      if (!tileType) continue;
+
       const img = tileImages[tileType];
 
       if (img && img.complete) {
