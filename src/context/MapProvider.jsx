@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { MapContext } from "./MapContext";
 import { saveMap, loadMap } from "../utils/storage";
 import { sampleMaps } from "../data/sampleMaps";
-import { BASE_TILE_SECTIONS } from "../assets/tileImages";
 
 const TILE_SIZE = 40;
-const WATER_TILES = new Set(["water", "water2", "water3", "water4"]);
+const WATER_TILES = new Set(["water", "water2"]);
 
 export default function MapProvider({ children }) {
   // Grid configuration and defaults
@@ -47,14 +46,19 @@ export default function MapProvider({ children }) {
       // Ensure selectedTile is properly formatted
       let wrapped;
       if (typeof selectedTile === "string") {
+        // If it's a string, use it directly as the tile type
         wrapped = { type: selectedTile };
       } else if (typeof selectedTile === "number") {
         // Convert numeric tile index to proper type
-        const tileTypes = ["water", "sand", "grass", "road", "stone"];
+        const tileTypes = ["water", "water2", "water4", "grass", "grass2", "grass3", "road", "road2", "sand", "sand2", "stone2", "tile2", "brick", "brick4", "stairs"];
         const typeIndex = Math.floor(selectedTile / 12); // 12 tiles per section
         wrapped = { type: tileTypes[typeIndex] };
-      } else {
+      } else if (selectedTile && typeof selectedTile === "object") {
+        // If it's already an object with a type property, use it as is
         wrapped = selectedTile;
+      } else {
+        // Default to grass if something unexpected is passed
+        wrapped = { type: "grass" };
       }
 
       console.log("Placing base tile:", wrapped, "at", x, y);
@@ -172,7 +176,7 @@ export default function MapProvider({ children }) {
       );
       setAnimatedEvents(reinitializedEvents);
 
-      const newBlocked = new Set(["water", "water2", "water3"]);
+      const newBlocked = new Set(["water", "water2"]);
       savedMap.gridOverlay.forEach((row, y) =>
         row.forEach((tile, x) => {
           if (tile !== null) {

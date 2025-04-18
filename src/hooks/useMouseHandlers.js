@@ -1,5 +1,5 @@
 import { getGridCoords } from "../utils/getGridCoords";
-import { BASE_TILE_SECTIONS } from "../assets/tileImages";
+import { TILE_NAME_TO_INDEX } from "../assets/tileImages";
 
 /**
  * Custom hook for handling mouse events.
@@ -22,8 +22,13 @@ export const useMouseHandlers = ({
 }) => {
   // Helper to resolve selectedTile (string to index if needed)
   const resolveTileIndex = () => {
-    if (activeLayer === "base" && typeof selectedTile === "string") {
-      return BASE_TILE_SECTIONS[selectedTile];
+    // For base layer, just return the tile type directly
+    if (activeLayer === "base") {
+      return selectedTile;
+    }
+    // For other layers, convert to index if needed
+    if (typeof selectedTile === "string") {
+      return TILE_NAME_TO_INDEX[selectedTile];
     }
     return selectedTile;
   };
@@ -37,7 +42,7 @@ export const useMouseHandlers = ({
     }
 
     if (activeLayer === "base" && drawingTool === "fill") {
-      setGridBase((prev) => prev.map((row) => row.map(() => tileIndex)));
+      setGridBase((prev) => prev.map((row) => row.map(() => ({ type: selectedTile }))));
       return;
     }
 
@@ -99,7 +104,7 @@ export const useMouseHandlers = ({
         const newGrid = prevGrid.map((row) => [...row]);
         for (let y = yStart; y <= yEnd; y++) {
           for (let x = xStart; x <= xEnd; x++) {
-            newGrid[y][x] = tileIndex;
+            newGrid[y][x] = { type: selectedTile };
           }
         }
         return newGrid;
