@@ -22,7 +22,9 @@ function App() {
     <div className="game-screen">
       {showWelcome && <WelcomeOverlay onDismiss={handleDismissWelcome} />}
 
-      {/*<h1 className="game-title">Map Builder</h1>*/}
+      <div className="navbar">
+        <Toolbar />
+      </div>
 
       <div className="main-content">
         <div className="canvas-container">
@@ -33,6 +35,7 @@ function App() {
           />
         </div>
       </div>
+      
       <div className="menu-wrapper">
         <div className="tile-palette-container">
           <TilePaletteMenu
@@ -43,9 +46,6 @@ function App() {
             onToolSelect={setDrawingTool}
             drawingTool={drawingTool}
           />
-        </div>
-        <div className="toolbar-container">
-          <Toolbar />
         </div>
       </div>
     </div>

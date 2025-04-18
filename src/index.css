@@ -334,7 +334,6 @@ button.active {
   flex-shrink: 0;
   width: 4.8vmin;
   height: 4.8vmin;
-  image-rendering: pixelated;
 }
 
 .character-info {

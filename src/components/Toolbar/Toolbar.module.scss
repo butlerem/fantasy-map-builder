@@ -2,6 +2,8 @@
   display: flex;
   gap: 0.8vmin;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .toolbarButton {
@@ -11,19 +13,30 @@
   padding: 0.6vmin 1.2vmin;
   border: none;
   border-radius: var(--radius);
-  clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
   display: flex;
   align-items: center;
   gap: 0.6vmin;
   font-family: inherit;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 8vmin;
+  height: 3vmin;
+  justify-content: center;
 }
 
 .toolbarButton:hover {
   background: #7a3746;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.toolbarButton:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .buttonText {
   font-size: 1.2vmin;
+  white-space: nowrap;
 }
